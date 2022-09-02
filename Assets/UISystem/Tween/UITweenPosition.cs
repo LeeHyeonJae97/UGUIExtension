@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UI
 {
     [RequireComponent(typeof(RectTransform))]
-    public class WindowTweenPosition : WindowTween
+    public class UITweenPosition : UITween
     {
         private RectTransform RectTr
         {

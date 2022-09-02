@@ -7,6 +7,6 @@ public class Initializer : MonoBehaviour
 {
     private void Start()
     {
-        Window.Get<MainFullScreen>().Open(true);
+        View.Set<MainFullScreen, MenuWindowed, ConfirmWindowed>();
     }
 }

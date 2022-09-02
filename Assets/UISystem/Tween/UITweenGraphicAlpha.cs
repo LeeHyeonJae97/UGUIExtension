@@ -2,27 +2,28 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
-    [RequireComponent(typeof(CanvasGroup))]
-    public class WindowTweenCanvasGroupAlpha : WindowTween
+    [RequireComponent(typeof(Graphic))]
+    public class UITweenGraphicAlpha : UITween
     {
-        private CanvasGroup Group
+        private Graphic Graphic
         {
             get
             {
-                if (_group == null)
+                if (_graphic == null)
                 {
-                    _group = GetComponent<CanvasGroup>();
+                    _graphic = GetComponent<Graphic>();
                 }
-                return _group;
+                return _graphic;
             }
         }
 
         [SerializeField] private float _inactive;
         [SerializeField] private float _active;
-        private CanvasGroup _group;
+        private Graphic _graphic;
 
         public override IEnumerator CoSetActive(bool value, bool directly)
         {
@@ -33,11 +34,13 @@ namespace UI
                     gameObject.SetActive(value);
                 }
 
-                Group.alpha = value ? _active : _inactive;
+                var color = Graphic.color;
+                color.a = value ? _active : _inactive;
+                Graphic.color = color;
             }
             else
             {
-                if (_tweener != null && _tweener.IsActive()) _tweener.Kill();
+                if (_tweener != null) _tweener.Kill();
 
                 if (value)
                 {
@@ -46,13 +49,13 @@ namespace UI
                         gameObject.SetActive(true);
                     }
 
-                    _tweener = Group.DOFade(_active, _duration);
+                    _tweener = Graphic.DOFade(_active, _duration);
 
                     yield return _tweener.WaitForCompletion();
                 }
                 else
                 {
-                    _tweener = Group.DOFade(_inactive, _duration);
+                    _tweener = Graphic.DOFade(_inactive, _duration);
 
                     yield return _tweener.WaitForCompletion();
 

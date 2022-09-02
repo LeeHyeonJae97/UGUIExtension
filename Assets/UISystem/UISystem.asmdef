@@ -1,5 +1,5 @@
 {
-    "name": "UI",
+    "name": "UISystem",
     "rootNamespace": "",
     "references": [
         "GUID:063935916abc7524ba5ecdbe4a02b210"

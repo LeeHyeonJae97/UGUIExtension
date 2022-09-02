@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public abstract class WindowTween : MonoBehaviour
+    public abstract class UITween : MonoBehaviour
     {
         public bool ActiveOnCanvasOpened => _activeOnCanvasOpened;
         public float Duration => _duration;

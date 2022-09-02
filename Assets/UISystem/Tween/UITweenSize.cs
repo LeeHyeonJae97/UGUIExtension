@@ -2,28 +2,27 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {
-    [RequireComponent(typeof(Graphic))]
-    public class WindowTweenGraphicAlpha : WindowTween
+    [RequireComponent(typeof(RectTransform))]
+    public class UITweenSize : UITween
     {
-        private Graphic Graphic
+        private RectTransform RectTr
         {
             get
             {
-                if (_graphic == null)
+                if (_rectTr == null)
                 {
-                    _graphic = GetComponent<Graphic>();
+                    _rectTr = GetComponent<RectTransform>();
                 }
-                return _graphic;
+                return _rectTr;
             }
         }
 
-        [SerializeField] private float _inactive;
-        [SerializeField] private float _active;
-        private Graphic _graphic;
+        [SerializeField] private Vector2 _inactive;
+        [SerializeField] private Vector2 _active;
+        private RectTransform _rectTr;
 
         public override IEnumerator CoSetActive(bool value, bool directly)
         {
@@ -34,9 +33,7 @@ namespace UI
                     gameObject.SetActive(value);
                 }
 
-                var color = Graphic.color;
-                color.a = value ? _active : _inactive;
-                Graphic.color = color;
+                RectTr.sizeDelta = value ? _active : _inactive;
             }
             else
             {
@@ -49,13 +46,13 @@ namespace UI
                         gameObject.SetActive(true);
                     }
 
-                    _tweener = Graphic.DOFade(_active, _duration);
+                    _tweener = RectTr.DOSizeDelta(_active, _duration);
 
                     yield return _tweener.WaitForCompletion();
                 }
                 else
                 {
-                    _tweener = Graphic.DOFade(_inactive, _duration);
+                    _tweener = RectTr.DOSizeDelta(_inactive, _duration);
 
                     yield return _tweener.WaitForCompletion();
 

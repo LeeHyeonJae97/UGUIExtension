@@ -557,6 +557,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5547624197532172152, guid: 86a72c3314e557f46be25658afc45f9d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 59223305}
+    - target: {fileID: 5547624197532172152, guid: 86a72c3314e557f46be25658afc45f9d, type: 3}
       propertyPath: m_SortingOrder
       value: 3
       objectReference: {fileID: 0}
@@ -657,6 +661,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1848993334625921023, guid: dcb3a47b5427e994099e4ca0b22df18d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 59223305}
     - target: {fileID: 1848993334625921023, guid: dcb3a47b5427e994099e4ca0b22df18d, type: 3}
       propertyPath: m_SortingOrder
       value: 2
@@ -851,6 +859,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7021747651600987464, guid: 96ab1b5b2103cd64f8198929262c1b2a, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 59223305}
+    - target: {fileID: 7021747651600987464, guid: 96ab1b5b2103cd64f8198929262c1b2a, type: 3}
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
@@ -867,6 +879,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FullScreen - Main
       objectReference: {fileID: 0}
+    - target: {fileID: 9201936945855041603, guid: 1d74fe588f7023246bf5c80ce69ea109, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 59223305}
     - target: {fileID: 9201936945855041660, guid: 1d74fe588f7023246bf5c80ce69ea109, type: 3}
       propertyPath: m_Pivot.x
       value: 0
