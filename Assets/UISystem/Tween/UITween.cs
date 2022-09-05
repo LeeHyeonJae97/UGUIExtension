@@ -15,6 +15,14 @@ namespace UI
         [SerializeField] protected float _duration;
         protected Tweener _tweener;
 
-        public abstract IEnumerator CoSetActive(bool value, bool directly);
+        internal abstract IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete);
+
+        internal void Kill(bool complete)
+        {
+            if (_tweener != null && _tweener.IsActive())
+            {
+                _tweener.Kill(complete);
+            }
+        }
     }
 }

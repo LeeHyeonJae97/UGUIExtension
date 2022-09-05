@@ -12,20 +12,28 @@ namespace UI
         public event UnityAction OnBeforeClosed;
         public event UnityAction OnClosed;
 
-        protected override IEnumerator CoOpen(bool directly)
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // inactivate window at first
+            StartCoroutine(CoSetActive(false, true, true, false));
+        }
+
+        protected override IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
             OnBeforeOpened?.Invoke();
 
-            yield return StartCoroutine(CoSetActive(true, directly));
+            yield return StartCoroutine(CoSetActive(true, directly, kill, complete));
 
             OnOpened?.Invoke();
         }
 
-        protected override IEnumerator CoClose(bool directly)
+        protected override IEnumerator CoClose(bool directly, bool kill, bool complete)
         {
             OnBeforeClosed?.Invoke();
 
-            yield return StartCoroutine(CoSetActive(false, directly));
+            yield return StartCoroutine(CoSetActive(false, directly, kill, complete));
 
             OnClosed?.Invoke();
         }

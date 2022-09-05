@@ -31,21 +31,24 @@ namespace UI
 
         }
 
-        public void Open(bool value, bool directly = false)
+        public void Open(bool value, bool directly = false, bool kill = true, bool complete = false)
         {
-            StartCoroutine(CoOpen(value, directly));
+            // CONTINUE :
+            // if not intend to kill, skip when coroutine is active
+            //
+            if (kill)
+            {
+                Kill(complete);
+            }
+
+            StartCoroutine(value ? CoOpen(directly, kill, complete) : CoClose(directly, kill, complete));
         }
 
-        public IEnumerator CoOpen(bool value, bool directly = false)
-        {
-            yield return StartCoroutine(value ? CoOpen(directly) : CoClose(directly));
-        }
+        protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);
 
-        protected abstract IEnumerator CoOpen(bool directly);
+        protected abstract IEnumerator CoClose(bool directly, bool kill, bool complete);
 
-        protected abstract IEnumerator CoClose(bool directly);
-
-        internal IEnumerator CoSetActive(bool value, bool directly)
+        internal IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
         {
             if (_tweens == null)
             {
@@ -61,7 +64,7 @@ namespace UI
                     {
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            StartCoroutine(_tweens[i].CoSetActive(_tweens[i].ActiveOnCanvasOpened, directly));
+                            StartCoroutine(_tweens[i].CoSetActive(_tweens[i].ActiveOnCanvasOpened, directly, kill, complete));
                         }
                     }
                     else
@@ -70,7 +73,7 @@ namespace UI
 
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(true, directly));
+                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete));
                         }
 
                         for (int i = 0; i < cors.Length; i++)
@@ -85,7 +88,7 @@ namespace UI
                     {
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            StartCoroutine(_tweens[i].CoSetActive(false, directly));
+                            StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete));
                         }
 
                         gameObject.SetActive(false);
@@ -96,7 +99,7 @@ namespace UI
 
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(false, directly));
+                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete));
                         }
 
                         for (int i = 0; i < cors.Length; i++)
@@ -106,6 +109,19 @@ namespace UI
 
                         gameObject.SetActive(false);
                     }
+                }
+            }
+        }
+
+        protected void Kill(bool complete)
+        {
+            StopAllCoroutines();
+
+            if (_tweens != null)
+            {
+                foreach (var tween in _tweens)
+                {
+                    tween.Kill(complete);
                 }
             }
         }

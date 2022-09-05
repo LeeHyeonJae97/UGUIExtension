@@ -25,7 +25,7 @@ namespace UI
         [SerializeField] private float _active;
         private Graphic _graphic;
 
-        public override IEnumerator CoSetActive(bool value, bool directly)
+        internal override IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
         {
             if (directly)
             {
@@ -40,8 +40,6 @@ namespace UI
             }
             else
             {
-                if (_tweener != null) _tweener.Kill();
-
                 if (value)
                 {
                     if (!_activeOnTweenInactivated)

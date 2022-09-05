@@ -18,17 +18,17 @@ namespace UI
 
         // TODO :
         // need to rename
-        public static void Pop()
+        public static void Pop(bool directly = false, bool kill = true, bool complete = false)
         {
-            _activatedStack.Peek().CoOpen(false);
+            _activatedStack.Peek().Open(false, directly, kill, complete);
         }
 
-        public static void Clear()
+        public static void Clear(bool directly = false, bool kill = true, bool complete = false)
         {
             // inactivate all of the windows
             while (_activatedStack.Count > 0)
             {
-                _activatedStack.Pop().CoSetActive(false, true);
+                _activatedStack.Pop().Open(false, directly, kill, complete);
             }
         }
         #endregion
@@ -47,7 +47,7 @@ namespace UI
             _windowDic.Add(GetType().ToString(), this);
 
             // inactivate window at first
-            StartCoroutine(CoSetActive(false, true));
+            StartCoroutine(CoSetActive(false, true, true, false));
         }
 
         protected override void OnDestroy()
