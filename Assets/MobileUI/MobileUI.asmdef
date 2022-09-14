@@ -1,0 +1,16 @@
+{
+    "name": "MobileUI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:063935916abc7524ba5ecdbe4a02b210"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

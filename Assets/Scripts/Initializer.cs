@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UI;
+using MobileUI;
 
 public class Initializer : MonoBehaviour
 {
