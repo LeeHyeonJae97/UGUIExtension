@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InteractableImage : Image
+[RequireComponent(typeof(Graphic))]
+public class InteractableColorTransition : MonoBehaviour
 {
     public bool interactable
     {
@@ -16,6 +17,17 @@ public class InteractableImage : Image
             color = _interactable ? NormalColor : DisabledColor;
         }
     }
+    public Color color
+    {
+        set
+        {
+            if (_graphic == null)
+            {
+                _graphic = GetComponent<Graphic>();
+            }
+            _graphic.color = value;
+        }
+    }
 
     public Color BaseColor => _baseColor;
     public Color NormalColor => _baseColor * _normalColor;
@@ -26,5 +38,6 @@ public class InteractableImage : Image
     [SerializeField] private Color _normalColor = Color.white;
     [SerializeField] private Color _pressedColor = Color.white;
     [SerializeField] private Color _disabledColor = Color.white;
+    private Graphic _graphic;
     private bool _interactable;
 }
