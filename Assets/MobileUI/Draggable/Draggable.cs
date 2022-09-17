@@ -7,8 +7,6 @@ namespace MobileUI
     [RequireComponent(typeof(RectTransform))]
     public class Draggable : MonoBehaviour
     {
-        public bool enabled { get; set; }
-
         private Canvas Canvas
         {
             get
@@ -23,12 +21,14 @@ namespace MobileUI
 
         private Canvas _canvas;
 
+        private void Reset()
+        {
+            enabled = false;
+        }
+
         private void LateUpdate()
         {
-            if (enabled)
-            {
-                transform.position = Canvas.renderMode == RenderMode.ScreenSpaceCamera ? Canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition) : Input.mousePosition;
-            }
+            transform.position = Canvas.renderMode == RenderMode.ScreenSpaceCamera ? Canvas.worldCamera.ScreenToWorldPoint(Input.mousePosition) : Input.mousePosition;
         }
     }
 }

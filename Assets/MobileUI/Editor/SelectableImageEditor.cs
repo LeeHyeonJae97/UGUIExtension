@@ -3,38 +3,41 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UI;
 
-[CustomEditor(typeof(SelectableImage)), CanEditMultipleObjects]
-public class SelectableImageEditor : ImageEditor
+namespace MobileUI
 {
-    private SerializedProperty _selectedColorProp;
-    private SerializedProperty _deselectedColorProp;
-    private SerializedProperty _normalColorProp;
-    private SerializedProperty _pressedColorProp;
-    private SerializedProperty _disabledColorProp;
-
-    protected override void OnEnable()
+    [CustomEditor(typeof(SelectableImage)), CanEditMultipleObjects]
+    public class SelectableImageEditor : ImageEditor
     {
-        base.OnEnable();
+        private SerializedProperty _selectedColorProp;
+        private SerializedProperty _deselectedColorProp;
+        private SerializedProperty _normalColorProp;
+        private SerializedProperty _pressedColorProp;
+        private SerializedProperty _disabledColorProp;
 
-        _selectedColorProp = serializedObject.FindProperty("_selectedColor");
-        _deselectedColorProp = serializedObject.FindProperty("_deselectedColor");
-        _normalColorProp = serializedObject.FindProperty("_normalColor");
-        _pressedColorProp = serializedObject.FindProperty("_pressedColor");
-        _disabledColorProp = serializedObject.FindProperty("_disabledColor");
-    }
+        protected override void OnEnable()
+        {
+            base.OnEnable();
 
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
+            _selectedColorProp = serializedObject.FindProperty("_selectedColor");
+            _deselectedColorProp = serializedObject.FindProperty("_deselectedColor");
+            _normalColorProp = serializedObject.FindProperty("_normalColor");
+            _pressedColorProp = serializedObject.FindProperty("_pressedColor");
+            _disabledColorProp = serializedObject.FindProperty("_disabledColor");
+        }
 
-        serializedObject.Update();
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
 
-        EditorGUILayout.PropertyField(_selectedColorProp);
-        EditorGUILayout.PropertyField(_deselectedColorProp);
-        EditorGUILayout.PropertyField(_normalColorProp);
-        EditorGUILayout.PropertyField(_pressedColorProp);
-        EditorGUILayout.PropertyField(_disabledColorProp);
+            serializedObject.Update();
 
-        serializedObject.ApplyModifiedProperties();
+            EditorGUILayout.PropertyField(_selectedColorProp);
+            EditorGUILayout.PropertyField(_deselectedColorProp);
+            EditorGUILayout.PropertyField(_normalColorProp);
+            EditorGUILayout.PropertyField(_pressedColorProp);
+            EditorGUILayout.PropertyField(_disabledColorProp);
+
+            serializedObject.ApplyModifiedProperties();
+        }
     }
 }
