@@ -7,94 +7,99 @@ using UnityEditor;
 [CanEditMultipleObjects]
 public class ExtendedScrollRectEditor : Editor
 {
-    SerializedProperty m_Content;
-    SerializedProperty m_Horizontal;
-    SerializedProperty m_Vertical;
-    SerializedProperty m_MovementType;
-    SerializedProperty m_Elasticity;
-    SerializedProperty m_Inertia;
-    SerializedProperty m_DecelerationRate;
-    SerializedProperty m_ScrollSensitivity;
-    SerializedProperty m_Viewport;
-    SerializedProperty m_HorizontalScrollbar;
-    SerializedProperty m_VerticalScrollbar;
-    SerializedProperty m_HorizontalScrollbarVisibility;
-    SerializedProperty m_VerticalScrollbarVisibility;
-    SerializedProperty m_HorizontalScrollbarSpacing;
-    SerializedProperty m_VerticalScrollbarSpacing;
-    SerializedProperty m_OnValueChanged;
-    SerializedProperty _layoutGroup;
-    SerializedProperty _type;
-    SerializedProperty _circularLoop;
-    SerializedProperty _onSlotRefreshed;
-    AnimBool m_ShowElasticity;
-    AnimBool m_ShowDecelerationRate;
-    bool m_ViewportIsNotChild, m_HScrollbarIsNotChild, m_VScrollbarIsNotChild;
-    static string s_HError = "For this visibility mode, the Viewport property and the Horizontal Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
-    static string s_VError = "For this visibility mode, the Viewport property and the Vertical Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
+    private static string _hError = "For this visibility mode, the Viewport property and the Horizontal Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
+    private static string _vError = "For this visibility mode, the Viewport property and the Vertical Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
+
+    private SerializedProperty _content;
+    private SerializedProperty _horizontal;
+    private SerializedProperty _vertical;
+    private SerializedProperty _movementType;
+    private SerializedProperty _elasticity;
+    private SerializedProperty _inertia;
+    private SerializedProperty _decelerationRate;
+    private SerializedProperty _scrollSensitivity;
+    private SerializedProperty _viewport;
+    private SerializedProperty _horizontalScrollbar;
+    private SerializedProperty _verticalScrollbar;
+    private SerializedProperty _horizontalScrollbarVisibility;
+    private SerializedProperty _verticalScrollbarVisibility;
+    private SerializedProperty _horizontalScrollbarSpacing;
+    private SerializedProperty _verticalScrollbarSpacing;
+    private SerializedProperty _onValueChanged;
+    private SerializedProperty _layoutGroup;
+    private SerializedProperty _type;
+    private SerializedProperty _circularLoop;
+    private SerializedProperty _onSlotRefreshed;
+    private AnimBool _showElasticity;
+    private AnimBool _showDecelerationRate;
+    private bool _viewportIsNotChild, _hScrollbarIsNotChild, _vScrollbarIsNotChild;
 
     protected virtual void OnEnable()
     {
-        m_Content = serializedObject.FindProperty("m_Content");
-        m_Horizontal = serializedObject.FindProperty("m_Horizontal");
-        m_Vertical = serializedObject.FindProperty("m_Vertical");
-        m_MovementType = serializedObject.FindProperty("m_MovementType");
-        m_Elasticity = serializedObject.FindProperty("m_Elasticity");
-        m_Inertia = serializedObject.FindProperty("m_Inertia");
-        m_DecelerationRate = serializedObject.FindProperty("m_DecelerationRate");
-        m_ScrollSensitivity = serializedObject.FindProperty("m_ScrollSensitivity");
-        m_Viewport = serializedObject.FindProperty("m_Viewport");
-        m_HorizontalScrollbar = serializedObject.FindProperty("m_HorizontalScrollbar");
-        m_VerticalScrollbar = serializedObject.FindProperty("m_VerticalScrollbar");
-        m_HorizontalScrollbarVisibility = serializedObject.FindProperty("m_HorizontalScrollbarVisibility");
-        m_VerticalScrollbarVisibility = serializedObject.FindProperty("m_VerticalScrollbarVisibility");
-        m_HorizontalScrollbarSpacing = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
-        m_VerticalScrollbarSpacing = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
-        m_OnValueChanged = serializedObject.FindProperty("m_OnValueChanged");
+        _content = serializedObject.FindProperty("m_Content");
+        _horizontal = serializedObject.FindProperty("m_Horizontal");
+        _vertical = serializedObject.FindProperty("m_Vertical");
+        _movementType = serializedObject.FindProperty("m_MovementType");
+        _elasticity = serializedObject.FindProperty("m_Elasticity");
+        _inertia = serializedObject.FindProperty("m_Inertia");
+        _decelerationRate = serializedObject.FindProperty("m_DecelerationRate");
+        _scrollSensitivity = serializedObject.FindProperty("m_ScrollSensitivity");
+        _viewport = serializedObject.FindProperty("m_Viewport");
+        _horizontalScrollbar = serializedObject.FindProperty("m_HorizontalScrollbar");
+        _verticalScrollbar = serializedObject.FindProperty("m_VerticalScrollbar");
+        _horizontalScrollbarVisibility = serializedObject.FindProperty("m_HorizontalScrollbarVisibility");
+        _verticalScrollbarVisibility = serializedObject.FindProperty("m_VerticalScrollbarVisibility");
+        _horizontalScrollbarSpacing = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
+        _verticalScrollbarSpacing = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
+        _onValueChanged = serializedObject.FindProperty("m_OnValueChanged");
         _layoutGroup = serializedObject.FindProperty("_layoutGroup");
         _type = serializedObject.FindProperty("_type");
         _circularLoop = serializedObject.FindProperty("_circularLoop");
         _onSlotRefreshed = serializedObject.FindProperty("_onSlotRefreshed");
+        _showElasticity = new AnimBool(Repaint);
+        _showDecelerationRate = new AnimBool(Repaint);
 
-        m_ShowElasticity = new AnimBool(Repaint);
-        m_ShowDecelerationRate = new AnimBool(Repaint);
         SetAnimBools(true);
     }
 
     protected virtual void OnDisable()
     {
-        m_ShowElasticity.valueChanged.RemoveListener(Repaint);
-        m_ShowDecelerationRate.valueChanged.RemoveListener(Repaint);
+        _showElasticity.valueChanged.RemoveListener(Repaint);
+        _showDecelerationRate.valueChanged.RemoveListener(Repaint);
     }
 
-    void SetAnimBools(bool instant)
+    private void SetAnimBools(bool instant)
     {
-        SetAnimBool(m_ShowElasticity, !m_MovementType.hasMultipleDifferentValues && m_MovementType.enumValueIndex == (int)ScrollRect.MovementType.Elastic, instant);
-        SetAnimBool(m_ShowDecelerationRate, !m_Inertia.hasMultipleDifferentValues && m_Inertia.boolValue == true, instant);
+        SetAnimBool(_showElasticity, !_movementType.hasMultipleDifferentValues && _movementType.enumValueIndex == (int)ScrollRect.MovementType.Elastic, instant);
+        SetAnimBool(_showDecelerationRate, !_inertia.hasMultipleDifferentValues && _inertia.boolValue == true, instant);
     }
 
-    void SetAnimBool(AnimBool a, bool value, bool instant)
+    private void SetAnimBool(AnimBool a, bool value, bool instant)
     {
         if (instant)
+        {
             a.value = value;
+        }
         else
+        {
             a.target = value;
+        }
     }
 
-    void CalculateCachedValues()
+    private void CalculateCachedValues()
     {
-        m_ViewportIsNotChild = false;
-        m_HScrollbarIsNotChild = false;
-        m_VScrollbarIsNotChild = false;
+        _viewportIsNotChild = false;
+        _hScrollbarIsNotChild = false;
+        _vScrollbarIsNotChild = false;
         if (targets.Length == 1)
         {
             Transform transform = ((ScrollRect)target).transform;
-            if (m_Viewport.objectReferenceValue == null || ((RectTransform)m_Viewport.objectReferenceValue).transform.parent != transform)
-                m_ViewportIsNotChild = true;
-            if (m_HorizontalScrollbar.objectReferenceValue == null || ((Scrollbar)m_HorizontalScrollbar.objectReferenceValue).transform.parent != transform)
-                m_HScrollbarIsNotChild = true;
-            if (m_VerticalScrollbar.objectReferenceValue == null || ((Scrollbar)m_VerticalScrollbar.objectReferenceValue).transform.parent != transform)
-                m_VScrollbarIsNotChild = true;
+            if (_viewport.objectReferenceValue == null || ((RectTransform)_viewport.objectReferenceValue).transform.parent != transform)
+                _viewportIsNotChild = true;
+            if (_horizontalScrollbar.objectReferenceValue == null || ((Scrollbar)_horizontalScrollbar.objectReferenceValue).transform.parent != transform)
+                _hScrollbarIsNotChild = true;
+            if (_verticalScrollbar.objectReferenceValue == null || ((Scrollbar)_verticalScrollbar.objectReferenceValue).transform.parent != transform)
+                _vScrollbarIsNotChild = true;
         }
     }
 
@@ -106,7 +111,7 @@ public class ExtendedScrollRectEditor : Editor
         // Once we have a reliable way to know if the object changed, only re-cache in that case.
         CalculateCachedValues();
 
-        EditorGUILayout.PropertyField(m_Content);
+        EditorGUILayout.PropertyField(_content);
         EditorGUILayout.PropertyField(_layoutGroup);
         EditorGUILayout.PropertyField(_type);
 
@@ -114,110 +119,114 @@ public class ExtendedScrollRectEditor : Editor
         {
             case (int)ExtendedScrollRect.Type.Horizontal:
                 {
-                    m_Horizontal.boolValue = true;
-                    m_Vertical.boolValue = false;
+                    _horizontal.boolValue = true;
+                    _vertical.boolValue = false;
                     break;
                 }
             case (int)ExtendedScrollRect.Type.Vertical:
                 {
-                    m_Horizontal.boolValue = false;
-                    m_Vertical.boolValue = true;
+                    _horizontal.boolValue = false;
+                    _vertical.boolValue = true;
                     break;
                 }
             case (int)ExtendedScrollRect.Type.GridHorizontal:
                 {
-                    m_Horizontal.boolValue = true;
-                    m_Vertical.boolValue = false;
+                    _horizontal.boolValue = true;
+                    _vertical.boolValue = false;
                     break;
                 }
             case (int)ExtendedScrollRect.Type.GridVertical:
                 {
-                    m_Horizontal.boolValue = false;
-                    m_Vertical.boolValue = true;
+                    _horizontal.boolValue = false;
+                    _vertical.boolValue = true;
                     break;
                 }
         }
 
         EditorGUILayout.PropertyField(_circularLoop);
 
-        EditorGUILayout.PropertyField(m_MovementType);
+        EditorGUILayout.PropertyField(_movementType);
 
         if (_circularLoop.boolValue)
         {
-            m_MovementType.enumValueIndex = (int)ScrollRect.MovementType.Unrestricted;
+            _movementType.enumValueIndex = (int)ScrollRect.MovementType.Unrestricted;
         }
-        else if (m_MovementType.enumValueIndex == (int)ScrollRect.MovementType.Unrestricted)
+        else if (_movementType.enumValueIndex == (int)ScrollRect.MovementType.Unrestricted)
         {
-            m_MovementType.enumValueIndex = (int)ScrollRect.MovementType.Elastic;
+            _movementType.enumValueIndex = (int)ScrollRect.MovementType.Elastic;
         }
 
-        if (EditorGUILayout.BeginFadeGroup(m_ShowElasticity.faded))
+        if (EditorGUILayout.BeginFadeGroup(_showElasticity.faded))
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(m_Elasticity);
+            EditorGUILayout.PropertyField(_elasticity);
             EditorGUI.indentLevel--;
         }
         EditorGUILayout.EndFadeGroup();
 
-        EditorGUILayout.PropertyField(m_Inertia);
-        if (EditorGUILayout.BeginFadeGroup(m_ShowDecelerationRate.faded))
+        EditorGUILayout.PropertyField(_inertia);
+        if (EditorGUILayout.BeginFadeGroup(_showDecelerationRate.faded))
         {
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(m_DecelerationRate);
+            EditorGUILayout.PropertyField(_decelerationRate);
             EditorGUI.indentLevel--;
         }
         EditorGUILayout.EndFadeGroup();
 
-        EditorGUILayout.PropertyField(m_ScrollSensitivity);
+        EditorGUILayout.PropertyField(_scrollSensitivity);
 
         EditorGUILayout.Space();
 
         if (!_circularLoop.boolValue)
         {
-            EditorGUILayout.PropertyField(m_Viewport);
+            EditorGUILayout.PropertyField(_viewport);
 
             switch (_type.enumValueIndex)
             {
                 case (int)ExtendedScrollRect.Type.Horizontal:
                 case (int)ExtendedScrollRect.Type.GridHorizontal:
                     {
-                        EditorGUILayout.PropertyField(m_HorizontalScrollbar);
-                        if (m_HorizontalScrollbar.objectReferenceValue && !m_HorizontalScrollbar.hasMultipleDifferentValues)
+                        EditorGUILayout.PropertyField(_horizontalScrollbar);
+                        if (_horizontalScrollbar.objectReferenceValue && !_horizontalScrollbar.hasMultipleDifferentValues)
                         {
                             EditorGUI.indentLevel++;
-                            EditorGUILayout.PropertyField(m_HorizontalScrollbarVisibility, EditorGUIUtility.TrTextContent("Visibility"));
+                            EditorGUILayout.PropertyField(_horizontalScrollbarVisibility, EditorGUIUtility.TrTextContent("Visibility"));
 
-                            if ((ScrollRect.ScrollbarVisibility)m_HorizontalScrollbarVisibility.enumValueIndex == ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport
-                                && !m_HorizontalScrollbarVisibility.hasMultipleDifferentValues)
+                            if ((ScrollRect.ScrollbarVisibility)_horizontalScrollbarVisibility.enumValueIndex == ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport
+                                && !_horizontalScrollbarVisibility.hasMultipleDifferentValues)
                             {
-                                if (m_ViewportIsNotChild || m_HScrollbarIsNotChild)
-                                    EditorGUILayout.HelpBox(s_HError, MessageType.Error);
-                                EditorGUILayout.PropertyField(m_HorizontalScrollbarSpacing, EditorGUIUtility.TrTextContent("Spacing"));
+                                if (_viewportIsNotChild || _hScrollbarIsNotChild)
+                                    EditorGUILayout.HelpBox(_hError, MessageType.Error);
+                                EditorGUILayout.PropertyField(_horizontalScrollbarSpacing, EditorGUIUtility.TrTextContent("Spacing"));
                             }
 
                             EditorGUI.indentLevel--;
                         }
+
+                        _verticalScrollbar.objectReferenceValue = null;
                         break;
                     }
                 case (int)ExtendedScrollRect.Type.Vertical:
                 case (int)ExtendedScrollRect.Type.GridVertical:
                     {
-                        EditorGUILayout.PropertyField(m_VerticalScrollbar);
-                        if (m_VerticalScrollbar.objectReferenceValue && !m_VerticalScrollbar.hasMultipleDifferentValues)
+                        EditorGUILayout.PropertyField(_verticalScrollbar);
+                        if (_verticalScrollbar.objectReferenceValue && !_verticalScrollbar.hasMultipleDifferentValues)
                         {
                             EditorGUI.indentLevel++;
-                            EditorGUILayout.PropertyField(m_VerticalScrollbarVisibility, EditorGUIUtility.TrTextContent("Visibility"));
+                            EditorGUILayout.PropertyField(_verticalScrollbarVisibility, EditorGUIUtility.TrTextContent("Visibility"));
 
-                            if ((ScrollRect.ScrollbarVisibility)m_VerticalScrollbarVisibility.enumValueIndex == ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport
-                                && !m_VerticalScrollbarVisibility.hasMultipleDifferentValues)
+                            if ((ScrollRect.ScrollbarVisibility)_verticalScrollbarVisibility.enumValueIndex == ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport
+                                && !_verticalScrollbarVisibility.hasMultipleDifferentValues)
                             {
-                                if (m_ViewportIsNotChild || m_VScrollbarIsNotChild)
-                                    EditorGUILayout.HelpBox(s_VError, MessageType.Error);
-                                EditorGUILayout.PropertyField(m_VerticalScrollbarSpacing, EditorGUIUtility.TrTextContent("Spacing"));
+                                if (_viewportIsNotChild || _vScrollbarIsNotChild)
+                                    EditorGUILayout.HelpBox(_vError, MessageType.Error);
+                                EditorGUILayout.PropertyField(_verticalScrollbarSpacing, EditorGUIUtility.TrTextContent("Spacing"));
                             }
 
                             EditorGUI.indentLevel--;
                         }
+
+                        _horizontalScrollbar.objectReferenceValue = null;
                         break;
                     }
             }
@@ -226,7 +235,7 @@ public class ExtendedScrollRectEditor : Editor
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.PropertyField(m_OnValueChanged);
+        EditorGUILayout.PropertyField(_onValueChanged);
 
         EditorGUILayout.Space();
 

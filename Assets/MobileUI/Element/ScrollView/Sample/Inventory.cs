@@ -34,7 +34,7 @@ public class Inventory : MonoBehaviour
 
         _scrollRect.Initialize(_data.Length, _slotPrefab.GetComponent<RectTransform>().GetSize());
 
-        for (int i = 0; i < _scrollRect.MaxSlot; i++)
+        for (int i = 0; i < _scrollRect.LengthVisible; i++)
         {
             Instantiate(_slotPrefab, _scrollRect.content).GetComponent<ItemSlot>().Init(_data[i]);
         }
