@@ -40,6 +40,7 @@ namespace MobileUI
         private bool _interactable;
         private bool _pressed;
 
+#if UNITY_EDITOR
         protected override void Reset()
         {
             _baseColor = Color.white;
@@ -47,5 +48,6 @@ namespace MobileUI
             _pressedColor = Color.white;
             _disabledColor = Color.white;
         }
+#endif
     }
 }
