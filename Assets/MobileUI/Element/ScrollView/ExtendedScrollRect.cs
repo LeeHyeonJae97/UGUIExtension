@@ -8,20 +8,22 @@ public class ExtendedScrollRect : ScrollRect
 {
     public enum Type { Horizontal, Vertical, GridHorizontal, GridVertical }
 
-    public int Length { get; set; }
+    public int Length { get; private set; }
     public int LengthVisible { get; private set; }
     public bool Full => Length >= LengthVisible;
-    public new RectTransform content => _layoutGroup.GetComponent<RectTransform>();
     public UnityEvent<int, GameObject> onSlotRefreshed { get { return _onSlotRefreshed; } set { _onSlotRefreshed = value; } }
 
+    [SerializeField] private RectTransform _contentWrapper;
     [SerializeField] private LayoutGroup _layoutGroup;
     [SerializeField] private Type _type;
     [SerializeField] private bool _circularLoop;
+    [SerializeField] private bool _scrollbar;
     [SerializeField] private UnityEvent<int, GameObject> _onSlotRefreshed;
     private float _slotWidthOrHeight;
-    private int _firstDataIndexCircular;
     private int _firstIndex;
+    private int _firstIndexCircular;
     private int _rowOrColumnCount;
+    private int _padding;
     private Vector2 _spacing;
 
     protected override void Awake()
@@ -31,8 +33,10 @@ public class ExtendedScrollRect : ScrollRect
         onValueChanged.AddListener(OnValueChanged);
     }
 
-    public void Initialize(int length, Vector2 size)
+    public void Initialize(int length)
     {
+        StopMovement();
+
         switch (_type)
         {
             case Type.Horizontal:
@@ -51,44 +55,209 @@ public class ExtendedScrollRect : ScrollRect
                 break;
         }
 
+        for (int i = 0; i < LengthVisible; i++)
+        {
+            content.GetChild(i).gameObject.SetActive(i < Length);
+        }
+
         void InitializeHorizontal()
         {
-            // get slot's width
-            _slotWidthOrHeight = size.x;
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
 
             // save length
             Length = length;
 
-            // get max count of slots needed and instantiate slot
-            LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / _slotWidthOrHeight) + 1;
+            // reset padding value
+            _layoutGroup.padding.left = _padding;
 
-            // save spacing value
-            _spacing.x = ((HorizontalLayoutGroup)_layoutGroup).spacing;
+            // set real content's size
+            content.sizeDelta = new Vector2(Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
 
-            // set content's size
-            base.content.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            // reset content's anchored position
+            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+
+            // set content's size 
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            }
         }
 
         void InitializeVertical()
         {
-            // get slot's height
-            _slotWidthOrHeight = size.y;
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
 
             // save length
             Length = length;
 
-            // get max count of slots needed and instantiate slot
-            LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / _slotWidthOrHeight) + 1;
+            // reset padding value
+            _layoutGroup.padding.top = _padding;
 
-            // save spacing value
-            _spacing.y = ((VerticalLayoutGroup)_layoutGroup).spacing;
+            // set real content's size
+            content.sizeDelta = new Vector2(0, Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
 
             // set content's size
-            base.content.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            }
         }
 
         void InitializeGridHorizontal()
         {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // save length
+            Length = length;
+
+            // reset padding value
+            _layoutGroup.padding.left = _padding;
+
+            // set real content's size
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+
+            // set content's size
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            }
+        }
+
+        void InitializeGridVertical()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // save length
+            Length = length;
+
+            // reset padding value
+            _layoutGroup.padding.top = _padding;
+
+            // set real content's size
+            this.content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+
+            var content = _scrollbar ? _contentWrapper : this.content;
+
+            // reset content's anchored position
+            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+
+            // set content's size
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            }
+        }
+    }
+
+    public void Initialize(int length, GameObject slotPrefab)
+    {
+        StopMovement();
+
+        switch (_type)
+        {
+            case Type.Horizontal:
+                InitializeHorizontal();
+                break;
+            case Type.Vertical:
+                InitializeVertical();
+                break;
+
+            case Type.GridHorizontal:
+                InitializeGridHorizontal();
+                break;
+
+            case Type.GridVertical:
+                InitializeGridVertical();
+                break;
+        }
+
+        for (int i = 0; i < LengthVisible; i++)
+        {
+            var slot = Instantiate(slotPrefab, content);
+
+            if (i >= Length)
+            {
+                slot.SetActive(false);
+            }
+        }
+
+        void InitializeHorizontal()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // get slot's width
+            _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().x;
+
+            // save length
+            Length = length;
+
+            // save padding value
+            _padding = _layoutGroup.padding.left;
+
+            // save spacing value
+            _spacing.x = ((HorizontalLayoutGroup)_layoutGroup).spacing;
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1;
+
+            // set real content's size
+            content.sizeDelta = new Vector2(Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+
+            // set content's size 
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            }
+        }
+
+        void InitializeVertical()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // get slot's height
+            _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().y;
+
+            // save length
+            Length = length;
+
+            // save padding value
+            _padding = _layoutGroup.padding.top;
+
+            // save spacing value
+            _spacing.y = ((VerticalLayoutGroup)_layoutGroup).spacing;
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1;
+
+            // set real content's size
+            content.sizeDelta = new Vector2(0, Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+
+            // set content's size
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            }
+        }
+
+        void InitializeGridHorizontal()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            var size = slotPrefab.GetComponent<RectTransform>().GetSize();
+
             // get slot's width
             _slotWidthOrHeight = size.x;
 
@@ -100,21 +269,35 @@ public class ExtendedScrollRect : ScrollRect
             // set cell size
             layoutGroup.cellSize = size;
 
-            // get slot count that need per column
-            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedRowCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().y / size.y);
-
-            // get max count of slots needed and instantiate slot
-            LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / _slotWidthOrHeight) + 1);
+            // save padding value
+            _padding = _layoutGroup.padding.left;
 
             // save spacing value
             _spacing = layoutGroup.spacing;
 
+            // get slot count that need per column
+            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedRowCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().y / (size.y + _spacing.y));
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1);
+
+            // set real content's size
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+
             // set content's size
-            base.content.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            }
         }
 
         void InitializeGridVertical()
         {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            var size = slotPrefab.GetComponent<RectTransform>().GetSize();
+
             // get slot's height
             _slotWidthOrHeight = size.y;
 
@@ -126,17 +309,26 @@ public class ExtendedScrollRect : ScrollRect
             // set cell size
             layoutGroup.cellSize = size;
 
-            // get slot count that need per row
-            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedColumnCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().x / size.x);
-
-            // get max count of slots needed and instantiate slot
-            LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / _slotWidthOrHeight) + 1);
-
             // save spacing value
             _spacing = layoutGroup.spacing;
 
+            // save padding value
+            _padding = _layoutGroup.padding.top;
+
+            // get slot count that need per row
+            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedColumnCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().x / (size.x + _spacing.x));
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1);
+
+            // set real content's size
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+
             // set content's size
-            base.content.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            if (_scrollbar)
+            {
+                _contentWrapper.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
+            }
         }
     }
 
@@ -177,10 +369,10 @@ public class ExtendedScrollRect : ScrollRect
                     _firstIndex++;
 
                     // calculate circular first index
-                    _firstDataIndexCircular = ++_firstDataIndexCircular % Length;
+                    _firstIndexCircular = ++_firstIndexCircular % Length;
 
                     // calculate circular last index
-                    int lastIndexCircular = (_firstDataIndexCircular + LengthVisible - 1) % Length;
+                    int lastIndexCircular = (_firstIndexCircular + LengthVisible - 1) % Length;
 
                     // get slot
                     var slot = content.GetChild(0);
@@ -224,13 +416,13 @@ public class ExtendedScrollRect : ScrollRect
                     _firstIndex--;
 
                     // calculate circular index
-                    _firstDataIndexCircular = --_firstDataIndexCircular < 0 ? Length - 1 + (_firstDataIndexCircular + 1) % (Length - 1) : _firstDataIndexCircular;
+                    _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
 
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
                     // refresh slot                    
-                    _onSlotRefreshed?.Invoke(_firstDataIndexCircular, slot.gameObject);
+                    _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -267,10 +459,10 @@ public class ExtendedScrollRect : ScrollRect
                     _firstIndex++;
 
                     // calculate circular first index
-                    _firstDataIndexCircular = _firstDataIndexCircular++ % Length;
+                    _firstIndexCircular = ++_firstIndexCircular % Length;
 
                     // calculate circular last index
-                    int lastIndexCircular = (_firstDataIndexCircular + LengthVisible - 1) % Length;
+                    int lastIndexCircular = (_firstIndexCircular + LengthVisible - 1) % Length;
 
                     // get slot
                     var slot = content.GetChild(0);
@@ -314,13 +506,13 @@ public class ExtendedScrollRect : ScrollRect
                     _firstIndex--;
 
                     // calculate circular index
-                    _firstDataIndexCircular = --_firstDataIndexCircular < 0 ? Length - 1 + (_firstDataIndexCircular + 1) % (Length - 1) : _firstDataIndexCircular;
+                    _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
 
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
                     // refresh slot                    
-                    _onSlotRefreshed?.Invoke(_firstDataIndexCircular, slot.gameObject);
+                    _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -348,7 +540,7 @@ public class ExtendedScrollRect : ScrollRect
         void OnValueChangedGridHorizontal()
         {
             // move all of the slots in first column to last column
-            if (base.content.anchoredPosition.x < (_firstIndex + 1) * (_slotWidthOrHeight + _spacing.x) * -1)
+            if (base.content.anchoredPosition.x < ((_firstIndex / _rowOrColumnCount) + 1) * (_slotWidthOrHeight + _spacing.x) * -1)
             {
                 if (_circularLoop)
                 {
@@ -360,10 +552,10 @@ public class ExtendedScrollRect : ScrollRect
                         _firstIndex++;
 
                         // calculate circular first index
-                        _firstDataIndexCircular = _firstDataIndexCircular++ % Length;
+                        _firstIndexCircular = ++_firstIndexCircular % Length;
 
                         // calculate circular last index
-                        int lastIndexCircular = (_firstDataIndexCircular + LengthVisible - 1) % Length;
+                        int lastIndexCircular = (_firstIndexCircular + LengthVisible - 1) % Length;
 
                         // get slot
                         var slot = content.GetChild(0);
@@ -409,7 +601,7 @@ public class ExtendedScrollRect : ScrollRect
             }
 
             // move all of the slots in last column to first column
-            else if (base.content.anchoredPosition.x > _firstIndex * (_slotWidthOrHeight + _spacing.x) * -1)
+            else if (base.content.anchoredPosition.x > (_firstIndex / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) * -1)
             {
                 if (_circularLoop)
                 {
@@ -421,13 +613,13 @@ public class ExtendedScrollRect : ScrollRect
                         _firstIndex--;
 
                         // calculate circular index
-                        _firstDataIndexCircular = --_firstDataIndexCircular < 0 ? Length - 1 + (_firstDataIndexCircular + 1) % (Length - 1) : _firstDataIndexCircular;
+                        _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
 
                         // get slot
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(_firstDataIndexCircular, slot.gameObject);
+                        _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
 
                         // move to first
                         slot.SetAsFirstSibling();
@@ -461,7 +653,7 @@ public class ExtendedScrollRect : ScrollRect
         void OnValueChangedGridVertical()
         {
             // move all of the slotss in first row to last row
-            if (base.content.anchoredPosition.y > (_firstIndex + 1) * (_slotWidthOrHeight + _spacing.y))
+            if (base.content.anchoredPosition.y > ((_firstIndex / _rowOrColumnCount) + 1) * (_slotWidthOrHeight + _spacing.y))
             {
                 if (_circularLoop)
                 {
@@ -473,10 +665,10 @@ public class ExtendedScrollRect : ScrollRect
                         _firstIndex++;
 
                         // calculate circular first index
-                        _firstDataIndexCircular = _firstDataIndexCircular++ % Length;
+                        _firstIndexCircular = ++_firstIndexCircular % Length;
 
                         // calculate circular last index
-                        int lastIndexCircular = (_firstDataIndexCircular + LengthVisible - 1) % Length;
+                        int lastIndexCircular = (_firstIndexCircular + LengthVisible - 1) % Length;
 
                         // get slot
                         var slot = content.GetChild(0);
@@ -521,7 +713,7 @@ public class ExtendedScrollRect : ScrollRect
             }
 
             // move all of the slots in last row to first row
-            else if (base.content.anchoredPosition.y < _firstIndex * (_slotWidthOrHeight + _spacing.y))
+            else if (base.content.anchoredPosition.y < (_firstIndex / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y))
             {
                 if (_circularLoop)
                 {
@@ -533,13 +725,13 @@ public class ExtendedScrollRect : ScrollRect
                         _firstIndex--;
 
                         // calculate circular index
-                        _firstDataIndexCircular = --_firstDataIndexCircular < 0 ? Length - 1 + (_firstDataIndexCircular + 1) % (Length - 1) : _firstDataIndexCircular;
+                        _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
 
                         // get slot
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(_firstDataIndexCircular, slot.gameObject);
+                        _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
 
                         // move to first
                         slot.SetAsFirstSibling();

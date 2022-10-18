@@ -269,7 +269,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &179220792
 Transform:
   m_ObjectHideFlags: 0
@@ -488,9 +488,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1601175956}
   _type: 2
   _circularLoop: 1
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -585,7 +587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 864d4738038699c46b34465636173bc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Content: {fileID: 1635737043}
+  m_Content: {fileID: 1636241589}
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 1
@@ -603,9 +605,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 1635737043}
   _layoutGroup: {fileID: 1636241591}
   _type: 1
   _circularLoop: 0
+  _scrollbar: 1
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -796,9 +800,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1425980613}
   _type: 0
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -850,7 +856,6 @@ GameObject:
   m_Component:
   - component: {fileID: 251433495}
   - component: {fileID: 251433497}
-  - component: {fileID: 251433496}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -878,20 +883,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &251433496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 251433494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!114 &251433497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1128,8 +1119,8 @@ RectTransform:
   m_Father: {fileID: 1886718998}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.3333333}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1874,7 +1865,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &803385748
 MonoBehaviour:
@@ -1912,7 +1903,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 0, y: 0}
-  m_Constraint: 2
+  m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1 &853376974
 GameObject:
@@ -2389,9 +2380,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 251433497}
   _type: 1
   _circularLoop: 1
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -2469,7 +2462,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 300}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1112127769
 MonoBehaviour:
@@ -2507,7 +2500,7 @@ MonoBehaviour:
   m_StartAxis: 0
   m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 0, y: 0}
-  m_Constraint: 2
+  m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1 &1115010908
 GameObject:
@@ -2671,9 +2664,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 863429651}
   _type: 2
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -2749,7 +2744,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2900,9 +2895,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1115010911}
   _type: 0
   _circularLoop: 1
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -2990,9 +2987,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 342813459}
   _type: 2
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -3211,9 +3210,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 242916538}
   _type: 0
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -3415,7 +3416,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1337787605}
   - component: {fileID: 1337787607}
-  - component: {fileID: 1337787606}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -3443,20 +3443,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &1337787606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337787604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!114 &1337787607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4044,9 +4030,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 803385749}
   _type: 3
   _circularLoop: 1
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -4250,9 +4238,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1112127770}
   _type: 3
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -4377,8 +4367,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 443761009}
   m_HandleRect: {fileID: 443761008}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.6666667
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4581,9 +4571,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1337787607}
   _type: 1
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -4672,7 +4664,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1636241589}
   - component: {fileID: 1636241591}
-  - component: {fileID: 1636241590}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -4700,20 +4691,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &1636241590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1636241588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!114 &1636241591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4824,9 +4801,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+  _contentWrapper: {fileID: 0}
   _layoutGroup: {fileID: 1724123027}
   _type: 3
   _circularLoop: 0
+  _scrollbar: 0
   _onSlotRefreshed:
     m_PersistentCalls:
       m_Calls: []
@@ -5242,7 +5221,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1709247981
 Transform:
   m_ObjectHideFlags: 0

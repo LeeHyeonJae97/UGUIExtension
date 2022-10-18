@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.UI;
-using UnityEngine;
+#endif
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(ExtendedGridLayoutGroup))]
 public class ExtendedGridLayoutGroupEditor : GridLayoutGroupEditor
 {
@@ -27,3 +30,4 @@ public class ExtendedGridLayoutGroupEditor : GridLayoutGroupEditor
         base.OnInspectorGUI();
     }
 }
+#endif

@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor.AnimatedValues;
 using UnityEditor;
+#endif
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(ExtendedScrollRect))]
 [CanEditMultipleObjects]
 public class ExtendedScrollRectEditor : Editor
@@ -26,9 +29,11 @@ public class ExtendedScrollRectEditor : Editor
     private SerializedProperty _horizontalScrollbarSpacing;
     private SerializedProperty _verticalScrollbarSpacing;
     private SerializedProperty _onValueChanged;
+    private SerializedProperty _contentWrapper;
     private SerializedProperty _layoutGroup;
     private SerializedProperty _type;
     private SerializedProperty _circularLoop;
+    private SerializedProperty _scrollbar;
     private SerializedProperty _onSlotRefreshed;
     private AnimBool _showElasticity;
     private AnimBool _showDecelerationRate;
@@ -52,9 +57,11 @@ public class ExtendedScrollRectEditor : Editor
         _horizontalScrollbarSpacing = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
         _verticalScrollbarSpacing = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
         _onValueChanged = serializedObject.FindProperty("m_OnValueChanged");
+        _contentWrapper = serializedObject.FindProperty("_contentWrapper");
         _layoutGroup = serializedObject.FindProperty("_layoutGroup");
         _type = serializedObject.FindProperty("_type");
         _circularLoop = serializedObject.FindProperty("_circularLoop");
+        _scrollbar = serializedObject.FindProperty("_scrollbar");
         _onSlotRefreshed = serializedObject.FindProperty("_onSlotRefreshed");
         _showElasticity = new AnimBool(Repaint);
         _showDecelerationRate = new AnimBool(Repaint);
@@ -111,6 +118,10 @@ public class ExtendedScrollRectEditor : Editor
         // Once we have a reliable way to know if the object changed, only re-cache in that case.
         CalculateCachedValues();
 
+        if (_scrollbar.boolValue)
+        {
+            EditorGUILayout.PropertyField(_contentWrapper);
+        }
         EditorGUILayout.PropertyField(_content);
         EditorGUILayout.PropertyField(_layoutGroup);
         EditorGUILayout.PropertyField(_type);
@@ -144,6 +155,7 @@ public class ExtendedScrollRectEditor : Editor
         }
 
         EditorGUILayout.PropertyField(_circularLoop);
+        EditorGUILayout.PropertyField(_scrollbar);
 
         EditorGUILayout.PropertyField(_movementType);
 
@@ -177,7 +189,7 @@ public class ExtendedScrollRectEditor : Editor
 
         EditorGUILayout.Space();
 
-        if (!_circularLoop.boolValue)
+        if (_scrollbar.boolValue && !_circularLoop.boolValue)
         {
             EditorGUILayout.PropertyField(_viewport);
 
@@ -231,7 +243,6 @@ public class ExtendedScrollRectEditor : Editor
                     }
             }
         }
-        
 
         EditorGUILayout.Space();
 
@@ -244,3 +255,4 @@ public class ExtendedScrollRectEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+#endif

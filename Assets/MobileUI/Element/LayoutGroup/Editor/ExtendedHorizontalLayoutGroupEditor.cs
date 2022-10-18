@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor.UI;
 using UnityEditor;
+#endif
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(ExtendedHorizontalLayoutGroup))]
 public class ExtendedHorizontalLayoutGroupEditor : HorizontalOrVerticalLayoutGroupEditor
 {
@@ -27,3 +30,4 @@ public class ExtendedHorizontalLayoutGroupEditor : HorizontalOrVerticalLayoutGro
         base.OnInspectorGUI();
     }
 }
+#endif
