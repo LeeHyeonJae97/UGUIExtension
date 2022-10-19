@@ -12,9 +12,8 @@ public class ExtendedScrollRect : ScrollRect
     public int LengthVisible { get; private set; }
     public bool Full => Length >= LengthVisible;
     public UnityEvent<int, GameObject> onSlotRefreshed { get { return _onSlotRefreshed; } set { _onSlotRefreshed = value; } }
+    private LayoutGroup LayoutGroup => content.GetComponent<LayoutGroup>();
 
-    [SerializeField] private RectTransform _contentWrapper;
-    [SerializeField] private LayoutGroup _layoutGroup;
     [SerializeField] private Type _type;
     [SerializeField] private bool _circularLoop;
     [SerializeField] private bool _scrollbar;
@@ -35,6 +34,8 @@ public class ExtendedScrollRect : ScrollRect
 
     public void Initialize(int length)
     {
+        if (content == null || LayoutGroup == null) return;
+
         StopMovement();
 
         switch (_type)
@@ -69,19 +70,13 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // reset padding value
-            _layoutGroup.padding.left = _padding;
+            LayoutGroup.padding.left = _padding;
 
-            // set real content's size
-            content.sizeDelta = new Vector2(Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
+            // set content's size
+            content.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
 
             // reset content's anchored position
-            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
-
-            // set content's size 
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-            }
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeVertical()
@@ -93,19 +88,13 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // reset padding value
-            _layoutGroup.padding.top = _padding;
-
-            // set real content's size
-            content.sizeDelta = new Vector2(0, Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-
-            // reset content's anchored position
-            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+            LayoutGroup.padding.top = _padding;
 
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-            }
+            content.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeGridHorizontal()
@@ -117,19 +106,13 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // reset padding value
-            _layoutGroup.padding.left = _padding;
-
-            // set real content's size
-            content.sizeDelta = new Vector2(Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-
-            // reset content's anchored position
-            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+            LayoutGroup.padding.left = _padding;
 
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-            }
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeGridVertical()
@@ -141,26 +124,20 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // reset padding value
-            _layoutGroup.padding.top = _padding;
-
-            // set real content's size
-            this.content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-
-            var content = _scrollbar ? _contentWrapper : this.content;
-
-            // reset content's anchored position
-            (_scrollbar ? _contentWrapper : this.content).anchoredPosition = Vector2.zero;
+            LayoutGroup.padding.top = _padding;
 
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-            }
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
     }
 
     public void Initialize(int length, GameObject slotPrefab)
     {
+        if (content == null || LayoutGroup == null) return;
+
         StopMovement();
 
         switch (_type)
@@ -203,22 +180,16 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // save padding value
-            _padding = _layoutGroup.padding.left;
+            _padding = LayoutGroup.padding.left;
 
             // save spacing value
-            _spacing.x = ((HorizontalLayoutGroup)_layoutGroup).spacing;
+            _spacing.x = ((HorizontalLayoutGroup)LayoutGroup).spacing;
 
             // get max count of slots needed and instantiate slot
             LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1;
 
-            // set real content's size
-            content.sizeDelta = new Vector2(Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-
-            // set content's size 
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-            }
+            // set content's size
+            content.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
         }
 
         void InitializeVertical()
@@ -233,22 +204,16 @@ public class ExtendedScrollRect : ScrollRect
             Length = length;
 
             // save padding value
-            _padding = _layoutGroup.padding.top;
+            _padding = LayoutGroup.padding.top;
 
             // save spacing value
-            _spacing.y = ((VerticalLayoutGroup)_layoutGroup).spacing;
+            _spacing.y = ((VerticalLayoutGroup)LayoutGroup).spacing;
 
             // get max count of slots needed and instantiate slot
             LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1;
 
-            // set real content's size
-            content.sizeDelta = new Vector2(0, Mathf.Min(length, LengthVisible) * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-            }
+            content.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
         }
 
         void InitializeGridHorizontal()
@@ -264,13 +229,13 @@ public class ExtendedScrollRect : ScrollRect
             // save length
             Length = length;
 
-            var layoutGroup = (GridLayoutGroup)_layoutGroup;
+            var layoutGroup = (GridLayoutGroup)LayoutGroup;
 
             // set cell size
             layoutGroup.cellSize = size;
 
             // save padding value
-            _padding = _layoutGroup.padding.left;
+            _padding = LayoutGroup.padding.left;
 
             // save spacing value
             _spacing = layoutGroup.spacing;
@@ -281,14 +246,8 @@ public class ExtendedScrollRect : ScrollRect
             // get max count of slots needed and instantiate slot
             LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1);
 
-            // set real content's size
-            content.sizeDelta = new Vector2(Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _layoutGroup.padding.left + _layoutGroup.padding.right, 0);
-            }
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
         }
 
         void InitializeGridVertical()
@@ -304,7 +263,7 @@ public class ExtendedScrollRect : ScrollRect
             // save length
             Length = length;
 
-            var layoutGroup = (GridLayoutGroup)_layoutGroup;
+            var layoutGroup = (GridLayoutGroup)LayoutGroup;
 
             // set cell size
             layoutGroup.cellSize = size;
@@ -313,7 +272,7 @@ public class ExtendedScrollRect : ScrollRect
             _spacing = layoutGroup.spacing;
 
             // save padding value
-            _padding = _layoutGroup.padding.top;
+            _padding = LayoutGroup.padding.top;
 
             // get slot count that need per row
             _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedColumnCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().x / (size.x + _spacing.x));
@@ -321,14 +280,8 @@ public class ExtendedScrollRect : ScrollRect
             // get max count of slots needed and instantiate slot
             LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1);
 
-            // set real content's size
-            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Mathf.Min(length, LengthVisible) / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-
             // set content's size
-            if (_scrollbar)
-            {
-                _contentWrapper.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _layoutGroup.padding.top + _layoutGroup.padding.bottom);
-            }
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
         }
     }
 
@@ -364,7 +317,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // increase padding
-                    _layoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
 
                     _firstIndex++;
 
@@ -389,7 +342,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex + LengthVisible == Length) return;
 
                     // increase padding
-                    _layoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
 
                     // get index
                     int lastIndex = ++_firstIndex + LengthVisible - 1;
@@ -411,7 +364,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // reduce padding
-                    _layoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
 
                     _firstIndex--;
 
@@ -432,7 +385,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex == 0) return;
 
                     // reduce padding
-                    _layoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
 
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
@@ -454,7 +407,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // increase padding
-                    _layoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
 
                     _firstIndex++;
 
@@ -479,7 +432,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex + LengthVisible == Length) return;
 
                     // increase padding
-                    _layoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
 
                     // get index
                     int lastIndex = ++_firstIndex + LengthVisible - 1;
@@ -501,7 +454,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // reduce padding
-                    _layoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
 
                     _firstIndex--;
 
@@ -523,7 +476,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex == 0) return;
 
                     // reduce padding
-                    _layoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
 
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
@@ -545,7 +498,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // increase padding
-                    _layoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -573,7 +526,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex + LengthVisible >= Length) return;
 
                     // increase padding
-                    _layoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -606,7 +559,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // reduce padding
-                    _layoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -630,7 +583,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex == 0) return;
 
                     // reduce padding
-                    _layoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
+                    LayoutGroup.padding.left -= (int)(_slotWidthOrHeight + _spacing.x);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -658,7 +611,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // increase padding
-                    _layoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -685,7 +638,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex + LengthVisible >= Length) return;
 
                     // increase padding
-                    _layoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -718,7 +671,7 @@ public class ExtendedScrollRect : ScrollRect
                 if (_circularLoop)
                 {
                     // reduce padding
-                    _layoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {
@@ -742,7 +695,7 @@ public class ExtendedScrollRect : ScrollRect
                     if (_firstIndex == 0) return;
 
                     // reduce padding
-                    _layoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
+                    LayoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
 
                     for (int i = 0; i < _rowOrColumnCount; i++)
                     {

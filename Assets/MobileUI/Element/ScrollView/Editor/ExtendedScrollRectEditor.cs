@@ -12,6 +12,8 @@ public class ExtendedScrollRectEditor : Editor
 {
     private static string _hError = "For this visibility mode, the Viewport property and the Horizontal Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
     private static string _vError = "For this visibility mode, the Viewport property and the Vertical Scrollbar property both needs to be set to a Rect Transform that is a child to the Scroll Rect.";
+    private static string _typeError = "Type is not matched with content's layout group";
+    private static string _noLayoutGroupError = "There's no layout group component on \'content\'";
 
     private SerializedProperty _content;
     private SerializedProperty _horizontal;
@@ -29,8 +31,6 @@ public class ExtendedScrollRectEditor : Editor
     private SerializedProperty _horizontalScrollbarSpacing;
     private SerializedProperty _verticalScrollbarSpacing;
     private SerializedProperty _onValueChanged;
-    private SerializedProperty _contentWrapper;
-    private SerializedProperty _layoutGroup;
     private SerializedProperty _type;
     private SerializedProperty _circularLoop;
     private SerializedProperty _scrollbar;
@@ -57,8 +57,6 @@ public class ExtendedScrollRectEditor : Editor
         _horizontalScrollbarSpacing = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
         _verticalScrollbarSpacing = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
         _onValueChanged = serializedObject.FindProperty("m_OnValueChanged");
-        _contentWrapper = serializedObject.FindProperty("_contentWrapper");
-        _layoutGroup = serializedObject.FindProperty("_layoutGroup");
         _type = serializedObject.FindProperty("_type");
         _circularLoop = serializedObject.FindProperty("_circularLoop");
         _scrollbar = serializedObject.FindProperty("_scrollbar");
@@ -118,13 +116,29 @@ public class ExtendedScrollRectEditor : Editor
         // Once we have a reliable way to know if the object changed, only re-cache in that case.
         CalculateCachedValues();
 
-        if (_scrollbar.boolValue)
-        {
-            EditorGUILayout.PropertyField(_contentWrapper);
-        }
         EditorGUILayout.PropertyField(_content);
-        EditorGUILayout.PropertyField(_layoutGroup);
-        EditorGUILayout.PropertyField(_type);
+
+        if (_content.objectReferenceValue != null)
+        {
+            LayoutGroup layoutGroup = (_content.objectReferenceValue as RectTransform).GetComponent<LayoutGroup>();
+
+            if (layoutGroup != null)
+            {
+                if ((_type.enumValueIndex == (int)ExtendedScrollRect.Type.Horizontal && !(layoutGroup is HorizontalLayoutGroup))
+                  || (_type.enumValueIndex == (int)ExtendedScrollRect.Type.Vertical && !(layoutGroup is VerticalLayoutGroup))
+                  || (_type.enumValueIndex == (int)ExtendedScrollRect.Type.GridHorizontal && !(layoutGroup is GridLayoutGroup))
+                  || (_type.enumValueIndex == (int)ExtendedScrollRect.Type.GridVertical && !(layoutGroup is GridLayoutGroup)))
+                {
+                    EditorGUILayout.HelpBox(_typeError, MessageType.Error);
+                }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(_noLayoutGroupError, MessageType.Error);
+            }
+        }
+
+        EditorGUILayout.PropertyField(_type);      
 
         switch (_type.enumValueIndex)
         {
