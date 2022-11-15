@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ItemSlot : MonoBehaviour
+public class ItemSlot : ScrollRectSlot
 {
     [SerializeField] private TextMeshProUGUI _text;
 
-    public void Init(ItemData data)
+    public override void Init(IScrollRectItem data)
     {
-        _text.text = $"{data.index}";
+        _text.text = $"{(data as ItemData).index}";
     }
 }

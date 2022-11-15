@@ -341,7 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1629732354}
 --- !u!114 &195695617
 MonoBehaviour:
@@ -491,9 +491,6 @@ MonoBehaviour:
   _type: 2
   _circularLoop: 1
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &203567038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,9 +603,6 @@ MonoBehaviour:
   _type: 1
   _circularLoop: 0
   _scrollbar: 1
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &225239527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -799,9 +793,6 @@ MonoBehaviour:
   _type: 0
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &251200537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1473,7 +1464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1188496711}
 --- !u!1 &699822403
 GameObject:
@@ -1507,7 +1498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1242547693}
 --- !u!114 &699822405
 MonoBehaviour:
@@ -1644,7 +1635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1219359340}
 --- !u!114 &737719815
 MonoBehaviour:
@@ -1760,7 +1751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 251200536}
 --- !u!114 &792768938
 MonoBehaviour:
@@ -1952,7 +1943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1426389136}
 --- !u!114 &853376977
 MonoBehaviour:
@@ -2377,9 +2368,6 @@ MonoBehaviour:
   _type: 1
   _circularLoop: 1
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1109244228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2659,9 +2647,6 @@ MonoBehaviour:
   _type: 2
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1125246882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2888,9 +2873,6 @@ MonoBehaviour:
   _type: 0
   _circularLoop: 1
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1188496713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2978,9 +2960,6 @@ MonoBehaviour:
   _type: 2
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1219359341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3199,9 +3178,6 @@ MonoBehaviour:
   _type: 0
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!224 &1242547694
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3327,7 +3303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 203567037}
 --- !u!114 &1260881459
 MonoBehaviour:
@@ -3506,7 +3482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1571474013}
 --- !u!114 &1386500603
 MonoBehaviour:
@@ -3789,7 +3765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 225239526}
 --- !u!114 &1412907600
 MonoBehaviour:
@@ -4017,9 +3993,6 @@ MonoBehaviour:
   _type: 3
   _circularLoop: 1
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1426389137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4223,9 +4196,6 @@ MonoBehaviour:
   _type: 3
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1571474014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4554,9 +4524,6 @@ MonoBehaviour:
   _type: 1
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1629732355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4745,9 +4712,6 @@ MonoBehaviour:
   _type: 3
   _circularLoop: 0
   _scrollbar: 0
-  _onSlotRefreshed:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1650863333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4966,7 +4930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1125246881}
 --- !u!114 &1686663991
 MonoBehaviour:
@@ -5082,7 +5046,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1109244227}
 --- !u!114 &1705735143
 MonoBehaviour:
@@ -5308,7 +5272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94926d92797bea544882fe8cbd3e1b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotPrefab: {fileID: 3324589990845761832, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
+  _slotPrefab: {fileID: 969523155093377102, guid: b16f5039924deaa4f9d8803608f2d2fe, type: 3}
   _scrollRect: {fileID: 1650863332}
 --- !u!114 &1763035879
 MonoBehaviour:

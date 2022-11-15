@@ -8,16 +8,29 @@ public class ExtendedScrollRect : ScrollRect
 {
     public enum Type { Horizontal, Vertical, GridHorizontal, GridVertical }
 
-    public int Length { get; private set; }
+    public IScrollRectItem[] Items
+    {
+        get
+        {
+            IScrollRectItem[] items = new IScrollRectItem[_items.Count];
+
+            for (int i = 0; i < items.Length; i++)
+            {
+                items[i] = _items[i];
+            }
+
+            return items;
+        }
+    }
+    public int Length => _items.Count;
     public int LengthVisible { get; private set; }
     public bool Full => Length >= LengthVisible;
-    public UnityEvent<int, GameObject> onSlotRefreshed { get { return _onSlotRefreshed; } set { _onSlotRefreshed = value; } }
     private LayoutGroup LayoutGroup => content.GetComponent<LayoutGroup>();
 
     [SerializeField] private Type _type;
     [SerializeField] private bool _circularLoop;
     [SerializeField] private bool _scrollbar;
-    [SerializeField] private UnityEvent<int, GameObject> _onSlotRefreshed;
+    private List<IScrollRectItem> _items;
     private float _slotWidthOrHeight;
     private int _firstIndex;
     private int _firstIndexCircular;
@@ -32,9 +45,9 @@ public class ExtendedScrollRect : ScrollRect
         onValueChanged.AddListener(OnValueChanged);
     }
 
-    public void Initialize(int length)
+    protected override void Reset()
     {
-        if (content == null || LayoutGroup == null) return;
+        base.Reset();
 
         StopMovement();
 
@@ -66,14 +79,11 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            // save length
-            Length = length;
-
             // reset padding value
             LayoutGroup.padding.left = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -84,14 +94,11 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            // save length
-            Length = length;
-
             // reset padding value
             LayoutGroup.padding.top = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -102,14 +109,11 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            // save length
-            Length = length;
-
             // reset padding value
             LayoutGroup.padding.left = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -120,25 +124,22 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            // save length
-            Length = length;
-
             // reset padding value
             LayoutGroup.padding.top = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
         }
     }
 
-    public void Initialize(int length, GameObject slotPrefab)
+    public void Initialize(List<IScrollRectItem> items, ScrollRectSlot slotPrefab)
     {
         if (content == null || LayoutGroup == null) return;
 
-        StopMovement();
+        _items = items;
 
         switch (_type)
         {
@@ -162,9 +163,13 @@ public class ExtendedScrollRect : ScrollRect
         {
             var slot = Instantiate(slotPrefab, content);
 
-            if (i >= Length)
+            if (i < Length)
             {
-                slot.SetActive(false);
+                slot.Init(items[i]);
+            }
+            else
+            {
+                slot.gameObject.SetActive(false);
             }
         }
 
@@ -176,9 +181,6 @@ public class ExtendedScrollRect : ScrollRect
             // get slot's width
             _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().x;
 
-            // save length
-            Length = length;
-
             // save padding value
             _padding = LayoutGroup.padding.left;
 
@@ -189,7 +191,10 @@ public class ExtendedScrollRect : ScrollRect
             LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1;
 
             // set content's size
-            content.sizeDelta = new Vector2(length * _slotWidthOrHeight + (length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeVertical()
@@ -199,9 +204,6 @@ public class ExtendedScrollRect : ScrollRect
 
             // get slot's height
             _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().y;
-
-            // save length
-            Length = length;
 
             // save padding value
             _padding = LayoutGroup.padding.top;
@@ -213,7 +215,10 @@ public class ExtendedScrollRect : ScrollRect
             LengthVisible = Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1;
 
             // set content's size
-            content.sizeDelta = new Vector2(0, length * _slotWidthOrHeight + (length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeGridHorizontal()
@@ -225,9 +230,6 @@ public class ExtendedScrollRect : ScrollRect
 
             // get slot's width
             _slotWidthOrHeight = size.x;
-
-            // save length
-            Length = length;
 
             var layoutGroup = (GridLayoutGroup)LayoutGroup;
 
@@ -247,7 +249,10 @@ public class ExtendedScrollRect : ScrollRect
             LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().x / (_slotWidthOrHeight + _spacing.x)) + 1);
 
             // set content's size
-            content.sizeDelta = new Vector2(Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
         }
 
         void InitializeGridVertical()
@@ -259,9 +264,6 @@ public class ExtendedScrollRect : ScrollRect
 
             // get slot's height
             _slotWidthOrHeight = size.y;
-
-            // save length
-            Length = length;
 
             var layoutGroup = (GridLayoutGroup)LayoutGroup;
 
@@ -281,7 +283,83 @@ public class ExtendedScrollRect : ScrollRect
             LengthVisible = _rowOrColumnCount * (Mathf.CeilToInt(GetComponent<RectTransform>().GetSize().y / (_slotWidthOrHeight + _spacing.y)) + 1);
 
             // set content's size
-            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
+        }
+    }
+
+    public void SetItems(List<IScrollRectItem> items)
+    {
+        _items = items;
+
+        Refresh();
+    }
+
+    public void AddItem(IScrollRectItem item)
+    {
+        _items.Add(item);
+
+        Refresh();
+        Reset();
+    }
+
+    public void AddItems(List<IScrollRectItem> items)
+    {
+        _items.AddRange(items);
+
+        Refresh();
+    }
+
+    public void InsertItem(int index, IScrollRectItem item)
+    {
+        _items.Insert(index, item);
+
+        Refresh();
+    }
+
+    public void InsertItems(int index, List<IScrollRectItem> items)
+    {
+        _items.InsertRange(index, items);
+
+        Refresh();
+    }
+
+    public void RemoveItem(IScrollRectItem item)
+    {
+        _items.Remove(item);
+
+        Refresh();
+    }
+
+    public void RemoveAt(int index)
+    {
+        _items.RemoveAt(index);
+
+        Refresh();
+    }
+
+    public void RemoveRange(int index, int count)
+    {
+        _items.RemoveRange(index, count);
+
+        Refresh();
+    }
+
+    private void Refresh()
+    {
+        for (int i = 0; i < LengthVisible; i++)
+        {
+            if (i < Length)
+            {
+                content.GetChild(i).GetComponent<ScrollRectSlot>().Init(_items[i + (_circularLoop ? _firstIndexCircular : _firstIndex)]);
+                content.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                content.GetChild(i).gameObject.SetActive(false);
+            }
         }
     }
 
@@ -330,8 +408,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(0);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(lastIndexCircular, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndexCircular]);
 
                     // move to last
                     slot.SetAsLastSibling();
@@ -351,7 +429,7 @@ public class ExtendedScrollRect : ScrollRect
                     var slot = content.GetChild(0);
 
                     // refresh slot
-                    _onSlotRefreshed?.Invoke(lastIndex, slot.gameObject);
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndex]);
 
                     // move to last
                     slot.SetAsLastSibling();
@@ -374,8 +452,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[_firstIndexCircular]);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -390,8 +468,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(--_firstIndex, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[--_firstIndex]);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -420,8 +498,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(0);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(lastIndexCircular, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndexCircular]);
 
                     // move to last
                     slot.SetAsLastSibling();
@@ -441,7 +519,7 @@ public class ExtendedScrollRect : ScrollRect
                     var slot = content.GetChild(0);
 
                     // refresh slot
-                    _onSlotRefreshed?.Invoke(lastIndex, slot.gameObject);
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndex]);
 
                     // move to last
                     slot.SetAsLastSibling();
@@ -464,8 +542,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[_firstIndexCircular]);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -481,8 +559,8 @@ public class ExtendedScrollRect : ScrollRect
                     // get slot
                     var slot = content.GetChild(content.childCount - 1);
 
-                    // refresh slot                    
-                    _onSlotRefreshed?.Invoke(--_firstIndex, slot.gameObject);
+                    // refresh slot
+                    slot.GetComponent<ScrollRectSlot>().Init(_items[--_firstIndex]);
 
                     // move to first
                     slot.SetAsFirstSibling();
@@ -513,8 +591,8 @@ public class ExtendedScrollRect : ScrollRect
                         // get slot
                         var slot = content.GetChild(0);
 
-                        // refresh slot                    
-                        _onSlotRefreshed?.Invoke(lastIndexCircular, slot.gameObject);
+                        // refresh slot
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndexCircular]);
 
                         // move to last
                         slot.SetAsLastSibling();
@@ -539,7 +617,7 @@ public class ExtendedScrollRect : ScrollRect
                         // refresh first slot with last data to show
                         if (lastIndex < Length)
                         {
-                            _onSlotRefreshed?.Invoke(lastIndex, slot.gameObject);
+                            slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndex]);
                         }
                         // if there's nothing to show more, just inactivate the slot
                         else
@@ -572,7 +650,7 @@ public class ExtendedScrollRect : ScrollRect
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[_firstIndexCircular]);
 
                         // move to first
                         slot.SetAsFirstSibling();
@@ -591,7 +669,7 @@ public class ExtendedScrollRect : ScrollRect
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(--_firstIndex, slot.gameObject);
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[--_firstIndex]);
 
                         // if inactivated, activate the slot
                         if (!slot.gameObject.activeInHierarchy) slot.gameObject.SetActive(true);
@@ -626,7 +704,7 @@ public class ExtendedScrollRect : ScrollRect
                         // get slot
                         var slot = content.GetChild(0);
 
-                        _onSlotRefreshed?.Invoke(lastIndexCircular, slot.gameObject);
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndexCircular]);
 
                         // move to last
                         slot.SetAsLastSibling();
@@ -651,7 +729,7 @@ public class ExtendedScrollRect : ScrollRect
                         // refresh first slot with last data to show
                         if (lastIndex < Length)
                         {
-                            _onSlotRefreshed?.Invoke(lastIndex, slot.gameObject);
+                            slot.GetComponent<ScrollRectSlot>().Init(_items[lastIndex]);
                         }
                         // if there's nothing to show more, just inactivate the slot
                         else
@@ -684,7 +762,7 @@ public class ExtendedScrollRect : ScrollRect
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(_firstIndexCircular, slot.gameObject);
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[_firstIndexCircular]);
 
                         // move to first
                         slot.SetAsFirstSibling();
@@ -703,7 +781,7 @@ public class ExtendedScrollRect : ScrollRect
                         var slot = content.GetChild(content.childCount - 1);
 
                         // refresh last slot with first data to show
-                        _onSlotRefreshed?.Invoke(--_firstIndex, slot.gameObject);
+                        slot.GetComponent<ScrollRectSlot>().Init(_items[--_firstIndex]);
 
                         // if inactivated, activate the slot
                         if (!slot.gameObject.activeInHierarchy) slot.gameObject.SetActive(true);

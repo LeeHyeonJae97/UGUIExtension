@@ -34,7 +34,6 @@ public class ExtendedScrollRectEditor : Editor
     private SerializedProperty _type;
     private SerializedProperty _circularLoop;
     private SerializedProperty _scrollbar;
-    private SerializedProperty _onSlotRefreshed;
     private AnimBool _showElasticity;
     private AnimBool _showDecelerationRate;
     private bool _viewportIsNotChild, _hScrollbarIsNotChild, _vScrollbarIsNotChild;
@@ -60,7 +59,6 @@ public class ExtendedScrollRectEditor : Editor
         _type = serializedObject.FindProperty("_type");
         _circularLoop = serializedObject.FindProperty("_circularLoop");
         _scrollbar = serializedObject.FindProperty("_scrollbar");
-        _onSlotRefreshed = serializedObject.FindProperty("_onSlotRefreshed");
         _showElasticity = new AnimBool(Repaint);
         _showDecelerationRate = new AnimBool(Repaint);
 
@@ -263,8 +261,6 @@ public class ExtendedScrollRectEditor : Editor
         EditorGUILayout.PropertyField(_onValueChanged);
 
         EditorGUILayout.Space();
-
-        EditorGUILayout.PropertyField(_onSlotRefreshed);
 
         serializedObject.ApplyModifiedProperties();
     }
