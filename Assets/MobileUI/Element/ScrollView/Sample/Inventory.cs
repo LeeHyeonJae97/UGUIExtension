@@ -7,7 +7,7 @@ public class Inventory : MonoBehaviour
 {
     [SerializeField] private ItemSlot _slotPrefab;
     [SerializeField] private ExtendedScrollRect _scrollRect;
-    private List<List<ItemData>> _data;
+    private List<List<IScrollRectItem>> _data;
     private int _tabIndex;
 
     private void Start()
@@ -21,27 +21,34 @@ public class Inventory : MonoBehaviour
         {
             _tabIndex = 0;
 
-            Initialize();
+            _scrollRect.SetItems(_data[_tabIndex]);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             _tabIndex = 1;
 
-            Initialize();
+            _scrollRect.SetItems(_data[_tabIndex]);
         }
-
-        void Initialize()
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            _scrollRect.SetItems(_data[_tabIndex].Cast<IScrollRectItem>().ToList());
+            _data[_tabIndex].Insert(2, new ItemData(10));
+
+            _scrollRect.SetItems(_data[_tabIndex]);
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            _data[_tabIndex].RemoveAt(1);
+
+            _scrollRect.SetItems(_data[_tabIndex]);
         }
     }
 
     protected void Initialize()
     {
-        _data = new List<List<ItemData>>(2);
+        _data = new List<List<IScrollRectItem>>(2);
 
-        _data.Add(new List<ItemData>(8));
-        _data.Add(new List<ItemData>(5));
+        _data.Add(new List<IScrollRectItem>(8));
+        _data.Add(new List<IScrollRectItem>(5));
 
         for (int i = 0; i < _data.Capacity; i++)
         {

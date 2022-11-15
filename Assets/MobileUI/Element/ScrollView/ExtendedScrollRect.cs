@@ -34,6 +34,7 @@ public class ExtendedScrollRect : ScrollRect
     private float _slotWidthOrHeight;
     private int _firstIndex;
     private int _firstIndexCircular;
+    private int _loop;
     private int _rowOrColumnCount;
     private int _padding;
     private Vector2 _spacing;
@@ -71,8 +72,18 @@ public class ExtendedScrollRect : ScrollRect
 
         for (int i = 0; i < LengthVisible; i++)
         {
-            content.GetChild(i).gameObject.SetActive(i < Length);
+            if (i < Length)
+            {
+                content.GetChild(i).GetComponent<ScrollRectSlot>().Init(_items[i + _firstIndex]);
+                content.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                content.GetChild(i).gameObject.SetActive(false);
+            }
         }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
 
         void InitializeHorizontal()
         {
@@ -83,7 +94,7 @@ public class ExtendedScrollRect : ScrollRect
             LayoutGroup.padding.left = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + _padding + LayoutGroup.padding.right, 0);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -98,7 +109,7 @@ public class ExtendedScrollRect : ScrollRect
             LayoutGroup.padding.top = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + _padding + LayoutGroup.padding.bottom);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -113,7 +124,7 @@ public class ExtendedScrollRect : ScrollRect
             LayoutGroup.padding.left = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _padding + LayoutGroup.padding.right, 0);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -128,7 +139,7 @@ public class ExtendedScrollRect : ScrollRect
             LayoutGroup.padding.top = _padding;
 
             // set content's size
-            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _padding + LayoutGroup.padding.bottom);
 
             // reset content's anchored position
             content.anchoredPosition = Vector2.zero;
@@ -302,7 +313,6 @@ public class ExtendedScrollRect : ScrollRect
         _items.Add(item);
 
         Refresh();
-        Reset();
     }
 
     public void AddItems(List<IScrollRectItem> items)
@@ -349,17 +359,80 @@ public class ExtendedScrollRect : ScrollRect
 
     private void Refresh()
     {
+        if (_circularLoop)
+        {
+            Reset();
+            return;
+        }
+
+        if (_firstIndex + LengthVisible >= Length)
+        {
+            _firstIndex = Mathf.Max(Length - LengthVisible, 0);
+        }
+
+        switch (_type)
+        {
+            case Type.Horizontal:
+                InitializeHorizontal();
+                break;
+            case Type.Vertical:
+                InitializeVertical();
+                break;
+
+            case Type.GridHorizontal:
+                InitializeGridHorizontal();
+                break;
+
+            case Type.GridVertical:
+                InitializeGridVertical();
+                break;
+        }
+
         for (int i = 0; i < LengthVisible; i++)
         {
             if (i < Length)
             {
-                content.GetChild(i).GetComponent<ScrollRectSlot>().Init(_items[i + (_circularLoop ? _firstIndexCircular : _firstIndex)]);
+                content.GetChild(i).GetComponent<ScrollRectSlot>().Init(_items[i + _firstIndex]);
                 content.GetChild(i).gameObject.SetActive(true);
             }
             else
             {
                 content.GetChild(i).gameObject.SetActive(false);
             }
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+
+        void InitializeHorizontal()
+        {
+            LayoutGroup.padding.left = _padding + (int)(_slotWidthOrHeight + _spacing.x) * _firstIndex;
+
+            // set content's size
+            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + _padding + LayoutGroup.padding.right, 0);
+        }
+
+        void InitializeVertical()
+        {
+            LayoutGroup.padding.top = _padding + (int)(_slotWidthOrHeight + _spacing.y) * _firstIndex;
+
+            // set content's size
+            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + _padding + LayoutGroup.padding.bottom);
+        }
+
+        void InitializeGridHorizontal()
+        {
+            LayoutGroup.padding.left = _padding + (int)(_slotWidthOrHeight + _spacing.x) * (_firstIndex / _rowOrColumnCount);
+
+            // set content's size
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + _padding + LayoutGroup.padding.right, 0);
+        }
+
+        void InitializeGridVertical()
+        {
+            LayoutGroup.padding.top = _padding + (int)(_slotWidthOrHeight + _spacing.y) * (_firstIndex / _rowOrColumnCount);
+
+            // set content's size
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + _padding + LayoutGroup.padding.bottom);
         }
     }
 
@@ -398,6 +471,8 @@ public class ExtendedScrollRect : ScrollRect
                     LayoutGroup.padding.left += (int)(_slotWidthOrHeight + _spacing.x);
 
                     _firstIndex++;
+
+                    _loop = _firstIndex / Length;
 
                     // calculate circular first index
                     _firstIndexCircular = ++_firstIndexCircular % Length;
@@ -446,6 +521,8 @@ public class ExtendedScrollRect : ScrollRect
 
                     _firstIndex--;
 
+                    _loop = _firstIndex / Length;
+
                     // calculate circular index
                     _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
 
@@ -488,6 +565,8 @@ public class ExtendedScrollRect : ScrollRect
                     LayoutGroup.padding.top += (int)(_slotWidthOrHeight + _spacing.y);
 
                     _firstIndex++;
+
+                    _loop = _firstIndex / Length;
 
                     // calculate circular first index
                     _firstIndexCircular = ++_firstIndexCircular % Length;
@@ -535,6 +614,8 @@ public class ExtendedScrollRect : ScrollRect
                     LayoutGroup.padding.top -= (int)(_slotWidthOrHeight + _spacing.y);
 
                     _firstIndex--;
+
+                    _loop = _firstIndex / Length;
 
                     // calculate circular index
                     _firstIndexCircular = --_firstIndexCircular < 0 ? Length - 1 + (_firstIndexCircular + 1) % (Length - 1) : _firstIndexCircular;
@@ -597,6 +678,8 @@ public class ExtendedScrollRect : ScrollRect
                         // move to last
                         slot.SetAsLastSibling();
                     }
+
+                    _loop = _firstIndex / _rowOrColumnCount / Length;
                 }
                 else
                 {
@@ -655,6 +738,8 @@ public class ExtendedScrollRect : ScrollRect
                         // move to first
                         slot.SetAsFirstSibling();
                     }
+
+                    _loop = _firstIndex / _rowOrColumnCount / Length;
                 }
                 else
                 {
@@ -709,6 +794,8 @@ public class ExtendedScrollRect : ScrollRect
                         // move to last
                         slot.SetAsLastSibling();
                     }
+
+                    _loop = _firstIndex / _rowOrColumnCount / Length;
                 }
                 else
                 {
@@ -767,6 +854,8 @@ public class ExtendedScrollRect : ScrollRect
                         // move to first
                         slot.SetAsFirstSibling();
                     }
+
+                    _loop = _firstIndex / _rowOrColumnCount / Length;
                 }
                 else
                 {
