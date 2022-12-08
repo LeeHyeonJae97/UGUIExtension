@@ -6,6 +6,20 @@ namespace MobileUI
 {
     public class FullScreen : Window
     {
+        private Panel[] _panels;
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _panels = GetComponentsInChildren<Panel>(true);
+
+            if (_panels.Length == 0)
+            {
+                _panels = null;
+            }
+        }
+
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
             // can't open duplicately
@@ -18,6 +32,15 @@ namespace MobileUI
             _activatedStack.Push(this);
 
             OnBeforeOpened();
+
+            // open or close all panels directly
+            if (_panels != null)
+            {
+                foreach (var panel in _panels)
+                {
+                    panel.Open(panel.ActiveOnWindowOpened, true);
+                }
+            }
 
             // open new window
             yield return StartCoroutine(CoSetActive(true, directly, kill, complete));
@@ -53,6 +76,14 @@ namespace MobileUI
             }
 
             OnBeforeClosed();
+
+            if (_panels != null)
+            {
+                foreach (var panel in _panels)
+                {
+                    panel.Open(false, true);
+                }
+            }
 
             // close this fullscreen window with windowed window over this            
             while (true)

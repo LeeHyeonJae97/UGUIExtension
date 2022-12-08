@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class ItemSlot : ScrollRectSlot
+namespace MobileUI
 {
-    [SerializeField] private TextMeshProUGUI _text;
-
-    public override void Init(IScrollRectItem data)
+    public class ItemSlot : ScrollRectSlot
     {
-        _text.text = $"{(data as ItemData).index}";
+        [SerializeField] private TextMeshProUGUI _text;
+
+        public override void Init(IScrollRectItem data)
+        {
+            _text.text = $"{(data as ItemData).index}";
+        }
     }
 }

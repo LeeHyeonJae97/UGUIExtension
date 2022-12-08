@@ -7,7 +7,6 @@ namespace MobileUI
     [RequireComponent(typeof(Canvas))]
     public abstract class Window : View
     {
-        #region static
         protected static Dictionary<string, Window> _windowDic = new Dictionary<string, Window>();
         protected static Stack<Window> _activatedStack = new Stack<Window>();
 
@@ -31,7 +30,6 @@ namespace MobileUI
                 _activatedStack.Pop().Open(false, directly, kill, complete);
             }
         }
-        #endregion
 
         public int SortingOrder => _canvas.sortingOrder;
 

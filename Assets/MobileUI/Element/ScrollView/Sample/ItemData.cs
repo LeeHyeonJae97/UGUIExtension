@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemData : IScrollRectItem
+namespace MobileUI
 {
-    public int index;
-
-    public ItemData(int index)
+    public class ItemData : IScrollRectItem
     {
-        this.index = index;
+        public int index;
+
+        public ItemData(int index)
+        {
+            this.index = index;
+        }
     }
 }

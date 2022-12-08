@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using MobileUI;
 
-public class Initializer : MonoBehaviour
+namespace MobileUI
 {
-    private void Start()
+    public class Initializer : MonoBehaviour
     {
-        Window.Get<MainFullScreen>().Open(true);
+        private void Start()
+        {
+            Window.Get<MainFullScreen>().Open(true);
+        }
     }
 }

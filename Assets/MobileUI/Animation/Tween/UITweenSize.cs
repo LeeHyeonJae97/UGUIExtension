@@ -19,14 +19,11 @@ namespace MobileUI
             _rectTr = GetComponent<RectTransform>();
         }
 
-        internal override IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
+        internal override IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete, bool _activeOnViewClosed)
         {
             if (directly)
             {
-                if (!_activeOnTweenInactivated)
-                {
-                    gameObject.SetActive(value);
-                }
+                gameObject.SetActive(value || _activeOnViewClosed);
 
                 _rectTr.sizeDelta = value ? _active : _inactive;
             }
@@ -34,10 +31,7 @@ namespace MobileUI
             {
                 if (value)
                 {
-                    if (!_activeOnTweenInactivated)
-                    {
-                        gameObject.SetActive(true);
-                    }
+                    gameObject.SetActive(true);
 
                     _tweener = _rectTr.DOSizeDelta(_active, _duration).SetEase(_ease);
 
@@ -49,10 +43,7 @@ namespace MobileUI
 
                     yield return _tweener.WaitForCompletion();
 
-                    if (!_activeOnTweenInactivated)
-                    {
-                        gameObject.SetActive(false);
-                    }
+                    gameObject.SetActive(_activeOnViewClosed);
                 }
             }
         }

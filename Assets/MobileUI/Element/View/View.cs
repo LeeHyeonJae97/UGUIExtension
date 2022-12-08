@@ -6,14 +6,15 @@ namespace MobileUI
 {
     public abstract class View : UIBehaviour
     {
-        public bool IsActive => gameObject.activeInHierarchy;
+        public bool IsActive { get; private set; }
 
+        [SerializeField] private bool _activeOnViewClosed;
         private UITween[] _tweens;
 
         protected virtual void Awake()
         {
             // get tweens
-            _tweens = GetComponentsInChildren<UITween>();
+            _tweens = GetComponents<UITween>();
 
             if (_tweens.Length == 0)
             {
@@ -33,14 +34,6 @@ namespace MobileUI
 
         public void Open(bool value, bool directly = false, bool kill = true, bool complete = false)
         {
-            // CONTINUE :
-            // if not intend to kill, skip when coroutine is active
-            //
-            if (kill)
-            {
-                Kill(complete);
-            }
-
             StartCoroutine(value ? CoOpen(directly, kill, complete) : CoClose(directly, kill, complete));
         }
 
@@ -50,12 +43,24 @@ namespace MobileUI
 
         internal IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
         {
+            IsActive = value;
+
             if (_tweens == null)
             {
-                gameObject.SetActive(value);
+                gameObject.SetActive(value || _activeOnViewClosed);
             }
             else
             {
+                if (kill)
+                {
+                    StopAllCoroutines();
+
+                    foreach (var tween in _tweens)
+                    {
+                        tween.Kill(complete);
+                    }
+                }
+
                 if (value)
                 {
                     gameObject.SetActive(true);
@@ -64,7 +69,7 @@ namespace MobileUI
                     {
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            StartCoroutine(_tweens[i].CoSetActive(_tweens[i].ActiveOnCanvasOpened, directly, kill, complete));
+                            StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete, _activeOnViewClosed));
                         }
                     }
                     else
@@ -73,7 +78,7 @@ namespace MobileUI
 
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete));
+                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete, _activeOnViewClosed));
                         }
 
                         for (int i = 0; i < cors.Length; i++)
@@ -88,10 +93,10 @@ namespace MobileUI
                     {
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete));
+                            StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete, _activeOnViewClosed));
                         }
 
-                        gameObject.SetActive(false);
+                        gameObject.SetActive(_activeOnViewClosed);
                     }
                     else
                     {
@@ -99,7 +104,7 @@ namespace MobileUI
 
                         for (int i = 0; i < _tweens.Length; i++)
                         {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete));
+                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete, _activeOnViewClosed));
                         }
 
                         for (int i = 0; i < cors.Length; i++)
@@ -107,21 +112,8 @@ namespace MobileUI
                             yield return cors[i];
                         }
 
-                        gameObject.SetActive(false);
+                        gameObject.SetActive(_activeOnViewClosed);
                     }
-                }
-            }
-        }
-
-        protected void Kill(bool complete)
-        {
-            StopAllCoroutines();
-
-            if (_tweens != null)
-            {
-                foreach (var tween in _tweens)
-                {
-                    tween.Kill(complete);
                 }
             }
         }

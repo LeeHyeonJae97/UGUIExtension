@@ -16,6 +16,7 @@ namespace MobileUI
 
             _scrollRect.content = _content;
             _content.SetAsLastSibling();
+            _content.anchoredPosition = new Vector2(_scrollRect.horizontal ? 0 : _content.anchoredPosition.x, _scrollRect.vertical ? 0 : _content.anchoredPosition.y);
             _content.gameObject.SetActive(true);
         }
 

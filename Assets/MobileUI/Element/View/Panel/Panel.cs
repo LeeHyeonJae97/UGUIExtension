@@ -7,6 +7,10 @@ namespace MobileUI
 {
     public sealed class Panel : View
     {
+        public bool ActiveOnWindowOpened => _activeOnWindowOpened;
+
+        [SerializeField] private bool _activeOnWindowOpened;
+
         public event UnityAction OnBeforeOpened;
         public event UnityAction OnOpened;
         public event UnityAction OnBeforeClosed;
