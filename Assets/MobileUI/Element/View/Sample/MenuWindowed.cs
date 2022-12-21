@@ -19,12 +19,12 @@ namespace MobileUI
 
         private void OnClickConfirmButton()
         {
-            Get<ConfirmWindowed>().Open(true);
+            Get<ConfirmWindowed>().Open();
         }
 
         private void OnClickCloseButton()
         {
-            Open(false);
+            Close();
         }
     }
 }

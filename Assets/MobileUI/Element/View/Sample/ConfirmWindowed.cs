@@ -19,12 +19,12 @@ namespace MobileUI
 
         private void OnClickOpenSettingsFullScreenButton()
         {
-            Get<SettingsFullScreen>().Open(true);
+            Get<SettingsFullScreen>().Open();
         }
 
         private void OnClickCloseButton()
         {
-            Open(false);
+            Close();
         }
     }
 }

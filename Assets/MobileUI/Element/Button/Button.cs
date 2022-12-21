@@ -31,9 +31,9 @@ namespace MobileUI
         private bool _down;
         private float _downDuration;
 
-        public UnityEvent onClick;
-        public UnityEvent onLongDown;
-        public UnityEvent onLongUp;
+        [HideInInspector] public UnityEvent onClick { get; private set; }
+        [HideInInspector] public UnityEvent onLongDown { get; private set; }
+        [HideInInspector] public UnityEvent onLongUp { get; private set; }
 
         private void Reset()
         {

@@ -12,7 +12,7 @@ namespace MobileUI
         {
             base.OnSelected();
 
-            _panel.Open(true);
+            _panel.Open();
             _panel.transform.SetAsLastSibling();
         }
 
@@ -20,7 +20,7 @@ namespace MobileUI
         {
             base.OnDeselected();
 
-            _panel.Open(false);
+            _panel.Close();
         }
     }
 }

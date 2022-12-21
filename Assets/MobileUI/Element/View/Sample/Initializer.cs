@@ -9,7 +9,7 @@ namespace MobileUI
     {
         private void Start()
         {
-            Window.Get<MainFullScreen>().Open(true);
+            Window.Get<MainFullScreen>().Open();
         }
     }
 }

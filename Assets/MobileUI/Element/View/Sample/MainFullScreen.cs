@@ -17,7 +17,7 @@ namespace MobileUI
 
         private void OnClickMenuButton()
         {
-            Get<MenuWindowed>().Open(true);
+            Get<MenuWindowed>().Open();
         }
     }
 }

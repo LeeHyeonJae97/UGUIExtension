@@ -32,6 +32,16 @@ namespace MobileUI
 
         }
 
+        public void Open(bool directly = false, bool kill = true, bool complete = false)
+        {
+            StartCoroutine(CoOpen(directly, kill, complete));
+        }
+
+        public void Close(bool directly = false, bool kill = true, bool complete = false)
+        {
+            StartCoroutine(CoClose(directly, kill, complete));
+        }
+
         public void Open(bool value, bool directly = false, bool kill = true, bool complete = false)
         {
             StartCoroutine(value ? CoOpen(directly, kill, complete) : CoClose(directly, kill, complete));

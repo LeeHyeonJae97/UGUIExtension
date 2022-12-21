@@ -38,7 +38,7 @@ namespace MobileUI
             {
                 foreach (var panel in _panels)
                 {
-                    panel.Open(panel.ActiveOnWindowOpened, true);
+                    panel.Open(value: panel.ActiveOnWindowOpened, true);
                 }
             }
 
@@ -81,7 +81,7 @@ namespace MobileUI
             {
                 foreach (var panel in _panels)
                 {
-                    panel.Open(false, true);
+                    panel.Close(true);
                 }
             }
 
