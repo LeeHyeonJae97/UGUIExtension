@@ -12,9 +12,18 @@ namespace MobileUI
             if (_activatedStack.Contains(this)) yield break;
 
             // can't open over popup window
-            if (_activatedStack.Count > 0 && _activatedStack.Peek() is Popup) yield break;
+            if (_activatedStack.Count > 0) yield break;
 
             OnBeforeOpened();
+
+            // open or close all panels directly
+            if (_panels != null)
+            {
+                foreach (var panel in _panels)
+                {
+                    panel.Open(directly);
+                }
+            }
 
             // open new window
             yield return StartCoroutine(CoSetActive(true, directly, kill, complete));
@@ -31,6 +40,14 @@ namespace MobileUI
             if (!_activatedStack.Contains(this)) yield break;
 
             OnBeforeClosed();
+
+            if (_panels != null)
+            {
+                foreach (var panel in _panels)
+                {
+                    panel.Close(directly);
+                }
+            }
 
             // pop(remove) from stack
             _activatedStack.Pop();

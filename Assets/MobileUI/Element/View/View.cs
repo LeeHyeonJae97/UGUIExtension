@@ -7,19 +7,19 @@ namespace MobileUI
     public abstract class View : UIBehaviour
     {
         public bool IsActive { get; private set; }
+        public int SortingOrder => _canvas.sortingOrder;
 
         [SerializeField] private bool _activeOnViewClosed;
-        private UITween[] _tweens;
+        protected Canvas _canvas;
+        protected IViewData _data;
+        private UITween _tween;
+
+        protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);
+        protected abstract IEnumerator CoClose(bool directly, bool kill, bool complete);
 
         protected virtual void Awake()
         {
-            // get tweens
-            _tweens = GetComponents<UITween>();
-
-            if (_tweens.Length == 0)
-            {
-                _tweens = null;
-            }
+            _tween = GetComponent<UITween>();
         }
 
         protected virtual void Start()
@@ -32,8 +32,60 @@ namespace MobileUI
 
         }
 
+        internal IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
+        {
+            IsActive = value;
+
+            if (_tween == null)
+            {
+                gameObject.SetActive(value || _activeOnViewClosed);
+            }
+            else
+            {
+                if (kill)
+                {
+                    StopAllCoroutines();
+                    _tween.Kill(complete);
+                }
+
+                if (value)
+                {
+                    gameObject.SetActive(true);
+
+                    if (directly)
+                    {
+                        StartCoroutine(_tween.CoPlay(UITweenerKey.Open, true));
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(_tween.CoPlay(UITweenerKey.Open, false));
+                    }
+                }
+                else
+                {
+                    if (directly)
+                    {
+                        StartCoroutine(_tween.CoPlay(UITweenerKey.Close, true));
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(_tween.CoPlay(UITweenerKey.Close, false));
+                    }
+
+                    gameObject.SetActive(_activeOnViewClosed);
+                }
+            }
+        }
+
         public void Open(bool directly = false, bool kill = true, bool complete = false)
         {
+            StartCoroutine(CoOpen(directly, kill, complete));
+        }
+
+        public void Open(IViewData data, bool directly = false, bool kill = true, bool complete = false)
+        {
+            _data = data;
+
             StartCoroutine(CoOpen(directly, kill, complete));
         }
 
@@ -47,85 +99,24 @@ namespace MobileUI
             StartCoroutine(value ? CoOpen(directly, kill, complete) : CoClose(directly, kill, complete));
         }
 
-        protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);
-
-        protected abstract IEnumerator CoClose(bool directly, bool kill, bool complete);
-
-        internal IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete)
+        protected virtual void OnBeforeOpened()
         {
-            IsActive = value;
 
-            if (_tweens == null)
-            {
-                gameObject.SetActive(value || _activeOnViewClosed);
-            }
-            else
-            {
-                if (kill)
-                {
-                    StopAllCoroutines();
+        }
 
-                    foreach (var tween in _tweens)
-                    {
-                        tween.Kill(complete);
-                    }
-                }
+        protected virtual void OnOpened()
+        {
 
-                if (value)
-                {
-                    gameObject.SetActive(true);
+        }
 
-                    if (directly)
-                    {
-                        for (int i = 0; i < _tweens.Length; i++)
-                        {
-                            StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete, _activeOnViewClosed));
-                        }
-                    }
-                    else
-                    {
-                        Coroutine[] cors = new Coroutine[_tweens.Length];
+        protected virtual void OnBeforeClosed()
+        {
 
-                        for (int i = 0; i < _tweens.Length; i++)
-                        {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(true, directly, kill, complete, _activeOnViewClosed));
-                        }
+        }
 
-                        for (int i = 0; i < cors.Length; i++)
-                        {
-                            yield return cors[i];
-                        }
-                    }
-                }
-                else
-                {
-                    if (directly)
-                    {
-                        for (int i = 0; i < _tweens.Length; i++)
-                        {
-                            StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete, _activeOnViewClosed));
-                        }
+        protected virtual void OnClosed()
+        {
 
-                        gameObject.SetActive(_activeOnViewClosed);
-                    }
-                    else
-                    {
-                        Coroutine[] cors = new Coroutine[_tweens.Length];
-
-                        for (int i = 0; i < _tweens.Length; i++)
-                        {
-                            cors[i] = StartCoroutine(_tweens[i].CoSetActive(false, directly, kill, complete, _activeOnViewClosed));
-                        }
-
-                        for (int i = 0; i < cors.Length; i++)
-                        {
-                            yield return cors[i];
-                        }
-
-                        gameObject.SetActive(_activeOnViewClosed);
-                    }
-                }
-            }
         }
     }
 }

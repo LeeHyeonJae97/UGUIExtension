@@ -5,41 +5,29 @@ using UnityEngine.Events;
 
 namespace MobileUI
 {
-    public sealed class Panel : View
+    public sealed class Panel : UIBehaviour
     {
-        public bool ActiveOnWindowOpened => _activeOnWindowOpened;
+        [SerializeField] UITweenerKey _key;
+        private UITween _tween;
 
-        [SerializeField] private bool _activeOnWindowOpened;
-
-        public event UnityAction OnBeforeOpened;
-        public event UnityAction OnOpened;
-        public event UnityAction OnBeforeClosed;
-        public event UnityAction OnClosed;
-
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
-
-            // inactivate window at first
-            StartCoroutine(CoSetActive(false, true, true, false));
+            _tween = GetComponent<UITween>();
         }
 
-        protected override IEnumerator CoOpen(bool directly, bool kill, bool complete)
+        public void Open(UITweenerKey key, bool directly = false)
         {
-            OnBeforeOpened?.Invoke();
-
-            yield return StartCoroutine(CoSetActive(true, directly, kill, complete));
-
-            OnOpened?.Invoke();
+            StartCoroutine(_tween.CoPlay(key, directly));
         }
 
-        protected override IEnumerator CoClose(bool directly, bool kill, bool complete)
+        public void Open(bool directly = false)
         {
-            OnBeforeClosed?.Invoke();
+            StartCoroutine(_tween.CoPlay(_key, directly));
+        }
 
-            yield return StartCoroutine(CoSetActive(false, directly, kill, complete));
-
-            OnClosed?.Invoke();
+        public void Close(bool directly = false)
+        {
+            StartCoroutine(_tween.CoPlay(UITweenerKey.Close, directly));
         }
     }
 }

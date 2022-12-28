@@ -8,14 +8,7 @@ namespace MobileUI
     {
         public new Coroutine StartCoroutine(IEnumerator routine)
         {
-            if (gameObject.activeInHierarchy)
-            {
-                return base.StartCoroutine(routine);
-            }
-            else
-            {
-                return UIManager.Instance.StartCoroutine(routine);
-            }
+            return UIManager.Instance.StartCoroutine(routine);
         }
     }
 }

@@ -22,12 +22,12 @@ namespace MobileUI
 
         private void OnClickOpenPanelButton()
         {
-            _buttonsPanel.Open();
+            _buttonsPanel.Open(false);
         }
 
         private void OnClickClosePanelButton()
         {
-            _buttonsPanel.Close();
+            _buttonsPanel.Close(false);
         }
 
         private void OnClickCloseButton()

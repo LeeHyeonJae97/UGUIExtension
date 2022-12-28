@@ -5,29 +5,63 @@ using UnityEngine;
 
 namespace MobileUI
 {
-    [RequireComponent(typeof(View))]
-    public abstract class UITween : MonoBehaviour
+    [RequireComponent(typeof(UIBehaviour))]
+    public class UITween : UIBehaviour
     {
-        public float Duration => _duration;
+        [SerializeReference] private List<UITweener> _tweeners = new List<UITweener>();
 
-        [SerializeField] protected Ease _ease;
-        [SerializeField] protected float _duration;
-        protected Tweener _tweener;
-
-        protected virtual void Reset()
+        protected void OnValidate()
         {
-            _ease = Ease.Unset;
-            _duration = 1f;
+            foreach(var tweener in _tweeners)
+            {
+                tweener.OnValidate();
+            }
         }
 
-        internal abstract IEnumerator CoSetActive(bool value, bool directly, bool kill, bool complete, bool _activeOnViewClosed);
+        internal IEnumerator CoPlay(UITweenerKey key, bool directly)
+        {
+            if (directly)
+            {
+                foreach (var tweener in _tweeners)
+                {
+                    if (tweener.Key == key)
+                    {
+                        StartCoroutine(tweener.CoPlay(directly));
+                    }
+                }
+            }
+            else
+            {
+                var cors = new List<Coroutine>();
+
+                foreach (var tweener in _tweeners)
+                {
+                    if (tweener.Key == key)
+                    {
+                        cors.Add(StartCoroutine(tweener.CoPlay(directly)));
+                    }
+                }
+
+                foreach (var cor in cors)
+                {
+                    yield return cor;
+                }
+            }
+        }
 
         internal void Kill(bool complete)
         {
-            if (_tweener != null && _tweener.IsActive())
+            foreach (var tweener in _tweeners)
             {
-                _tweener.Kill(complete);
+                tweener.Kill(complete);
             }
         }
+
+#if UNITY_EDITOR
+        public void AddTweener(UITweener tweener)
+        {
+            _tweeners.Add(tweener);
+        }
+#endif
     }
 }

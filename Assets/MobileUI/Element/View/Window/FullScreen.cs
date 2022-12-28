@@ -6,27 +6,13 @@ namespace MobileUI
 {
     public class FullScreen : Window
     {
-        private Panel[] _panels;
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            _panels = GetComponentsInChildren<Panel>(true);
-
-            if (_panels.Length == 0)
-            {
-                _panels = null;
-            }
-        }
-
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
             // can't open duplicately
             if (_activatedStack.Contains(this)) yield break;
 
             // can't open over popup window
-            if (_activatedStack.Count > 0 && _activatedStack.Peek() is Popup) yield break;
+            if (_activatedStack.Count > 0) yield break;
 
             // push new window to stack
             _activatedStack.Push(this);
@@ -38,7 +24,7 @@ namespace MobileUI
             {
                 foreach (var panel in _panels)
                 {
-                    panel.Open(value: panel.ActiveOnWindowOpened, true);
+                    panel.Open(directly);
                 }
             }
 
@@ -81,7 +67,7 @@ namespace MobileUI
             {
                 foreach (var panel in _panels)
                 {
-                    panel.Close(true);
+                    panel.Close(directly);
                 }
             }
 
