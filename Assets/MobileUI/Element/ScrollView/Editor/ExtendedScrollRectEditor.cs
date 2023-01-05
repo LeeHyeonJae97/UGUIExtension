@@ -30,7 +30,7 @@ public class ExtendedScrollRectEditor : Editor
     private SerializedProperty _verticalScrollbarVisibility;
     private SerializedProperty _horizontalScrollbarSpacing;
     private SerializedProperty _verticalScrollbarSpacing;
-    private SerializedProperty _onValueChanged;
+    //private SerializedProperty _onValueChanged;
     private SerializedProperty _type;
     private SerializedProperty _circularLoop;
     private SerializedProperty _scrollbar;
@@ -55,7 +55,7 @@ public class ExtendedScrollRectEditor : Editor
         _verticalScrollbarVisibility = serializedObject.FindProperty("m_VerticalScrollbarVisibility");
         _horizontalScrollbarSpacing = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
         _verticalScrollbarSpacing = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
-        _onValueChanged = serializedObject.FindProperty("m_OnValueChanged");
+        //_onValueChanged = serializedObject.FindProperty("m_OnValueChanged");
         _type = serializedObject.FindProperty("_type");
         _circularLoop = serializedObject.FindProperty("_circularLoop");
         _scrollbar = serializedObject.FindProperty("_scrollbar");
@@ -258,7 +258,7 @@ public class ExtendedScrollRectEditor : Editor
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.PropertyField(_onValueChanged);
+        //EditorGUILayout.PropertyField(_onValueChanged);
 
         EditorGUILayout.Space();
 

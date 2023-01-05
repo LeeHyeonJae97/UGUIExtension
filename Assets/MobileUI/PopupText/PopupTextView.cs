@@ -9,19 +9,26 @@ namespace MobileUI
     {
         [SerializeField] private TextMeshProUGUI _text;
 
+#if UNITY_EDITOR
+        private void Reset()
+        {
+            _data = new PopupTextViewData("Content", 1f);
+        }
+#endif
+
         protected override void OnBeforeOpened()
         {
             base.OnBeforeOpened();
 
             var data = _data as PopupTextViewData;
 
-            _text.text = data.content;
+            _text.text = data.Content;
 
             StartCoroutine(CoTimer());
 
             IEnumerator CoTimer()
             {
-                yield return new WaitForSeconds(data.duration);
+                yield return new WaitForSeconds(data.Duration);
 
                 Close();
             }
@@ -31,13 +38,16 @@ namespace MobileUI
     [System.Serializable]
     public class PopupTextViewData : IViewData
     {
-        public string content;
-        public float duration;
+        public string Content => _content;
+        public float Duration => _duration;
+
+        [SerializeField] private string _content;
+        [SerializeField] private float _duration;
 
         public PopupTextViewData(string content, float duration)
         {
-            this.content = content;
-            this.duration = duration;
+            _content = content;
+            _duration = duration;
         }
-    }
+    }    
 }

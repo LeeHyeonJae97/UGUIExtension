@@ -1,132 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 namespace MobileUI
 {
-    public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    public class TabButton : TabButtonBase
     {
-        public bool interactable
+        [SerializeField] private GameObject _tab;
+
+        protected override void OnSelected()
         {
-            get { return _interactable; }
+            base.OnSelected();
 
-            set
-            {
-                _interactable = value;
-
-                if (_image != null)
-                {
-                    _image.interactable = value;
-                }
-            }
-        }
-        internal TabGroup TabGroup => _tabGroup;
-
-        [SerializeField] private bool _interactable = true;
-        [SerializeField] private SelectableImage _image;
-        [SerializeField] private TabGroup _tabGroup;
-
-        public UnityEvent<bool> onStateChanged;
-        public UnityEvent onSelected;
-        public UnityEvent onDeselected;
-
-        private void Reset()
-        {
-            _interactable = true;
-            _image = GetComponent<SelectableImage>();
-            _tabGroup = GetComponentInParent<TabGroup>();
+            _tab.SetActive(true);
+            _tab.transform.SetAsLastSibling();
         }
 
-        private void OnValidate()
+        protected override void OnDeselected()
         {
-            if (_image != null)
-            {
-                _image.interactable = _interactable;
-            }
-        }
+            base.OnDeselected();
 
-        public void Select()
-        {
-            if (!_interactable) return;
-
-            _tabGroup.Selected?.OnStateChanged(false, true);
-            _tabGroup.Selected = this;
-            _tabGroup.Selected.OnStateChanged(true, true);
-        }
-
-        internal void OnStateChanged(bool value, bool invokeEvent)
-        {
-            if (!_interactable) return;
-
-            if (value)
-            {
-                OnSelected();
-
-                if (invokeEvent)
-                {
-                    onSelected.Invoke();
-                    onStateChanged.Invoke(true);
-                }
-            }
-            else
-            {
-                OnDeselected();
-
-                if (invokeEvent)
-                {
-                    onDeselected.Invoke();
-                    onStateChanged.Invoke(false);
-                }
-            }
-        }
-
-        protected virtual void OnSelected()
-        {
-            if (!_interactable) return;
-
-            if (_image != null)
-            {
-                _image.selected = true;
-            }
-        }
-
-        protected virtual void OnDeselected()
-        {
-            if (!_interactable) return;
-
-            if (_image != null)
-            {
-                _image.selected = false;
-            }
-        }
-
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (!_interactable) return;
-
-            Select();
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            if (!_interactable) return;
-
-            if (_image != null)
-            {
-                _image.pressed = true;
-            }
-        }
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            if (!_interactable) return;
-
-            if (_image != null)
-            {
-                _image.pressed = false;
-            }
+            _tab.SetActive(false);
         }
     }
 }

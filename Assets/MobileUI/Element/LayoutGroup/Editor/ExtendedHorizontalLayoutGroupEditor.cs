@@ -7,27 +7,30 @@ using UnityEditor;
 #endif
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(ExtendedHorizontalLayoutGroup))]
-public class ExtendedHorizontalLayoutGroupEditor : HorizontalOrVerticalLayoutGroupEditor
+namespace MobileUI
 {
-    private SerializedProperty _runtimeMode;
-
-    protected override void OnEnable()
+    [CustomEditor(typeof(ExtendedHorizontalLayoutGroup))]
+    public class ExtendedHorizontalLayoutGroupEditor : HorizontalOrVerticalLayoutGroupEditor
     {
-        base.OnEnable();
+        private SerializedProperty _runtimeMode;
 
-        _runtimeMode = serializedObject.FindProperty("_runtimeMode");
-    }
+        protected override void OnEnable()
+        {
+            base.OnEnable();
 
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
+            _runtimeMode = serializedObject.FindProperty("_runtimeMode");
+        }
 
-        EditorGUILayout.PropertyField(_runtimeMode);
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-        serializedObject.ApplyModifiedProperties();
+            EditorGUILayout.PropertyField(_runtimeMode);
 
-        base.OnInspectorGUI();
+            serializedObject.ApplyModifiedProperties();
+
+            base.OnInspectorGUI();
+        }
     }
 }
 #endif

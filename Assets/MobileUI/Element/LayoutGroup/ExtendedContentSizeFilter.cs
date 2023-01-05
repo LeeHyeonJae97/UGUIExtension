@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExtendedContentSizeFilter : ContentSizeFitter
+namespace MobileUI
 {
-    public FitMode RadialFit { get { return _radialFit; } set { _radialFit = value; } }
-
-    [SerializeField] private FitMode _radialFit;
-
-    public override void SetLayoutHorizontal()
+    public class ExtendedContentSizeFilter : ContentSizeFitter
     {
-        base.SetLayoutHorizontal();
-    }
+        public FitMode RadialFit { get { return _radialFit; } set { _radialFit = value; } }
 
-    public override void SetLayoutVertical()
-    {
-        base.SetLayoutVertical();
+        [SerializeField] private FitMode _radialFit;
+
+        public override void SetLayoutHorizontal()
+        {
+            base.SetLayoutHorizontal();
+        }
+
+        public override void SetLayoutVertical()
+        {
+            base.SetLayoutVertical();
+        }
     }
 }

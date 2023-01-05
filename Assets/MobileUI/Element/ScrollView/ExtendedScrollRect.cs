@@ -46,10 +46,17 @@ public class ExtendedScrollRect : ScrollRect
         onValueChanged.AddListener(OnValueChanged);
     }
 
+#if UNITY_EDITOR
     protected override void Reset()
     {
         base.Reset();
 
+        ResetInternal();
+    }
+#endif
+
+    private void ResetInternal()
+    {
         StopMovement();
 
         switch (_type)
@@ -146,7 +153,7 @@ public class ExtendedScrollRect : ScrollRect
         }
     }
 
-    public void Initialize(List<IScrollRectItem> items, ScrollRectSlot slotPrefab)
+    public void Initialize(List<IScrollRectItem> items)
     {
         if (content == null || LayoutGroup == null) return;
 
@@ -170,17 +177,17 @@ public class ExtendedScrollRect : ScrollRect
                 break;
         }
 
-        for (int i = 0; i < LengthVisible; i++)
-        {
-            var slot = Instantiate(slotPrefab, content);
+        var slots = GetComponentsInChildren<ScrollRectSlot>();
 
+        for (int i = 0; i < slots.Length; i++)
+        {
             if (i < Length)
             {
-                slot.Init(items[i]);
+                slots[i].gameObject.SetActive(true);
             }
             else
             {
-                slot.gameObject.SetActive(false);
+                slots[i].gameObject.SetActive(false);
             }
         }
 
@@ -190,7 +197,181 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndexCircular = 0;
 
             // get slot's width
-            _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().x;
+            _slotWidthOrHeight = GetComponentInChildren<ScrollRectSlot>().GetComponent<RectTransform>().GetSize().x;
+
+            // save padding value
+            _padding = LayoutGroup.padding.left;
+
+            // save spacing value
+            _spacing.x = ((HorizontalLayoutGroup)LayoutGroup).spacing;
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = GetComponentsInChildren<ScrollRectSlot>().Length;
+
+            // set content's size
+            content.sizeDelta = new Vector2(Length * _slotWidthOrHeight + (Length - 1) * _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
+        }
+
+        void InitializeVertical()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // get slot's height
+            _slotWidthOrHeight = GetComponentInChildren<ScrollRectSlot>().GetComponent<RectTransform>().GetSize().y;
+
+            // save padding value
+            _padding = LayoutGroup.padding.top;
+
+            // save spacing value
+            _spacing.y = ((VerticalLayoutGroup)LayoutGroup).spacing;
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = GetComponentsInChildren<ScrollRectSlot>().Length;
+
+            // set content's size
+            content.sizeDelta = new Vector2(0, Length * _slotWidthOrHeight + (Length - 1) * _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
+        }
+
+        void InitializeGridHorizontal()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            var size = GetComponentInChildren<ScrollRectSlot>().GetComponent<RectTransform>().GetSize();
+
+            // get slot's width
+            _slotWidthOrHeight = size.x;
+
+            var layoutGroup = (GridLayoutGroup)LayoutGroup;
+
+            // set cell size
+            layoutGroup.cellSize = size;
+
+            // save padding value
+            _padding = LayoutGroup.padding.left;
+
+            // save spacing value
+            _spacing = layoutGroup.spacing;
+
+            // get slot count that need per column
+            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedRowCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().y / (size.y + _spacing.y));
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = _rowOrColumnCount * GetComponentsInChildren<ScrollRectSlot>().Length;
+
+            // set content's size
+            content.sizeDelta = new Vector2(Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.x) - _spacing.x + LayoutGroup.padding.left + LayoutGroup.padding.right, 0);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
+        }
+
+        void InitializeGridVertical()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            var size = GetComponentInChildren<ScrollRectSlot>().GetComponent<RectTransform>().GetSize();
+
+            // get slot's height
+            _slotWidthOrHeight = size.y;
+
+            var layoutGroup = (GridLayoutGroup)LayoutGroup;
+
+            // set cell size
+            layoutGroup.cellSize = size;
+
+            // save spacing value
+            _spacing = layoutGroup.spacing;
+
+            // save padding value
+            _padding = LayoutGroup.padding.top;
+
+            // get slot count that need per row
+            _rowOrColumnCount = layoutGroup.constraint == GridLayoutGroup.Constraint.FixedColumnCount ? layoutGroup.constraintCount : Mathf.FloorToInt(GetComponent<RectTransform>().GetSize().x / (size.x + _spacing.x));
+
+            // get max count of slots needed and instantiate slot
+            LengthVisible = _rowOrColumnCount * GetComponentsInChildren<ScrollRectSlot>().Length;
+
+            // set content's size
+            content.sizeDelta = new Vector2(0, Mathf.CeilToInt(Length / _rowOrColumnCount) * (_slotWidthOrHeight + _spacing.y) - _spacing.y + LayoutGroup.padding.top + LayoutGroup.padding.bottom);
+
+            // reset content's anchored position
+            content.anchoredPosition = Vector2.zero;
+        }
+    }
+
+    public void Initialize(List<IScrollRectItem> items, ScrollRectSlot slotPrefab = null)
+    {
+        if (content == null || LayoutGroup == null) return;
+
+        _items = items;
+
+        switch (_type)
+        {
+            case Type.Horizontal:
+                InitializeHorizontal();
+                break;
+            case Type.Vertical:
+                InitializeVertical();
+                break;
+
+            case Type.GridHorizontal:
+                InitializeGridHorizontal();
+                break;
+
+            case Type.GridVertical:
+                InitializeGridVertical();
+                break;
+        }
+
+        if (slotPrefab != null)
+        {
+            for (int i = 0; i < LengthVisible; i++)
+            {
+                var slot = Instantiate(slotPrefab, content);
+
+                if (i < Length)
+                {
+                    slot.Init(items[i]);
+                }
+                else
+                {
+                    slot.gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            var slots = GetComponentsInChildren<ScrollRectSlot>();
+
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (i < Length)
+                {
+                    slots[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    slots[i].gameObject.SetActive(false);
+                }
+            }
+        }
+
+        void InitializeHorizontal()
+        {
+            _firstIndex = 0;
+            _firstIndexCircular = 0;
+
+            // get slot's width
+            _slotWidthOrHeight = (slotPrefab != null ? slotPrefab : GetComponentInChildren<ScrollRectSlot>()).GetComponent<RectTransform>().GetSize().x;
 
             // save padding value
             _padding = LayoutGroup.padding.left;
@@ -214,7 +395,7 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndexCircular = 0;
 
             // get slot's height
-            _slotWidthOrHeight = slotPrefab.GetComponent<RectTransform>().GetSize().y;
+            _slotWidthOrHeight = (slotPrefab != null ? slotPrefab : GetComponentInChildren<ScrollRectSlot>()).GetComponent<RectTransform>().GetSize().y;
 
             // save padding value
             _padding = LayoutGroup.padding.top;
@@ -237,7 +418,7 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            var size = slotPrefab.GetComponent<RectTransform>().GetSize();
+            var size = (slotPrefab != null ? slotPrefab : GetComponentInChildren<ScrollRectSlot>()).GetComponent<RectTransform>().GetSize();
 
             // get slot's width
             _slotWidthOrHeight = size.x;
@@ -271,7 +452,7 @@ public class ExtendedScrollRect : ScrollRect
             _firstIndex = 0;
             _firstIndexCircular = 0;
 
-            var size = slotPrefab.GetComponent<RectTransform>().GetSize();
+            var size = (slotPrefab != null ? slotPrefab : GetComponentInChildren<ScrollRectSlot>()).GetComponent<RectTransform>().GetSize();
 
             // get slot's height
             _slotWidthOrHeight = size.y;
@@ -361,7 +542,7 @@ public class ExtendedScrollRect : ScrollRect
     {
         if (_circularLoop)
         {
-            Reset();
+            ResetInternal();
             return;
         }
 

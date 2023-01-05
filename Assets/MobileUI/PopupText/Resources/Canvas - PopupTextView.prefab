@@ -169,10 +169,10 @@ RectTransform:
   m_Father: {fileID: 1847253753265114959}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 50}
+  m_SizeDelta: {x: 341, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1847253751973457345
 CanvasRenderer:
@@ -268,7 +268,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activeOnViewClosed: 0
-  _text: {fileID: 1847253751732414647}
+  _data:
+    rid: 3025206858425827373
+  _text: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 3025206858425827373
+      type: {class: PopupTextViewData, ns: MobileUI, asm: MobileUI}
+      data:
+        _content: Content
+        _duration: 1
 --- !u!114 &8368330635663276621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,9 +292,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tweeners:
-  - rid: 3025206829968261139
   - rid: 3025206829968261142
   - rid: 3025206829968261143
+  - rid: 3025206829968261139
   references:
     version: 2
     RefIds:

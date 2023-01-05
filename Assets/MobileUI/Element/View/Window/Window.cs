@@ -28,8 +28,6 @@ namespace MobileUI
             }
         }
 
-        protected Panel[] _panels;
-
         protected override void Awake()
         {
             base.Awake();
@@ -37,13 +35,6 @@ namespace MobileUI
             _canvas = GetComponent<Canvas>();
 
             _windowDic.Add(GetType().ToString(), this);
-
-            _panels = GetComponentsInChildren<Panel>(true);
-
-            if (_panels.Length == 0)
-            {
-                _panels = null;
-            }
 
             StartCoroutine(CoSetActive(false, true, true, false));
         }

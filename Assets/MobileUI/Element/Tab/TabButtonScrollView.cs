@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MobileUI
 {
-    public class TabButtonScrollView : TabButton
+    public class TabButtonScrollView : TabButtonBase
     {
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private RectTransform _content;

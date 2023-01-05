@@ -11,7 +11,7 @@ namespace MobileUI
 
         [SerializeField] private bool _activeOnViewClosed;
         protected Canvas _canvas;
-        protected IViewData _data;
+        [SerializeReference] protected IViewData _data;
         private UITween _tween;
 
         protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);

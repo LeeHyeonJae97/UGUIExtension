@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,56 +9,25 @@ using UnityEngine.UI;
 
 namespace MobileUI
 {
-    public class Toggle : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+    public class Toggle : MonoBehaviour, IPointerClickHandler
     {
-        public bool interactable
-        {
-            get { return _interactable; }
-
-            set
-            {
-                _interactable = value;
-
-
-                if (_backgroundImage != null)
-                {
-                    _backgroundImage.interactable = value;
-                }
-                if (_handleImage != null)
-                {
-                    _handleImage.interactable = value;
-                }
-            }
-        }
         public bool IsOn => _isOn;
 
         [SerializeField] private bool _interactable;
         [SerializeField] private bool _isOn;
-        [SerializeField] private InteractableImage _backgroundImage;
-        [SerializeField] private InteractableImage _handleImage;
         [SerializeField] private RectTransform _handle;
         [SerializeField] private float _onHandlePosition;
         [SerializeField] private float _offHandlePosition;
 
-        public UnityEvent<bool> onStateChanged;
+        [field: NonSerialized] public UnityEvent<bool> onStateChanged { get; private set; } = new UnityEvent<bool>();
 
+#if UNITY_EDITOR
         private void Reset()
         {
             _interactable = true;
             _isOn = true;
         }
-
-        private void OnValidate()
-        {
-            if (_backgroundImage != null)
-            {
-                _backgroundImage.interactable = _interactable;
-            }
-            if (_handleImage != null)
-            {
-                _handleImage.interactable = _interactable;
-            }
-        }
+#endif
 
         private void Awake()
         {
@@ -100,34 +70,6 @@ namespace MobileUI
             if (!_interactable) return;
 
             Switch(false, true);
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
-            if (!_interactable) return;
-
-            if (_backgroundImage != null)
-            {
-                _backgroundImage.pressed = true;
-            }
-            if (_handleImage != null)
-            {
-                _handleImage.pressed = true;
-            }
-        }
-
-        public void OnPointerUp(PointerEventData eventData)
-        {
-            if (!_interactable) return;
-
-            if (_backgroundImage != null)
-            {
-                _backgroundImage.pressed = false;
-            }
-            if (_handleImage != null)
-            {
-                _handleImage.pressed = false;
-            }
         }
     }
 }

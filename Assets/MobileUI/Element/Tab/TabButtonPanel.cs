@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MobileUI
 {
-    public class TabButtonPanel : TabButton
+    public class TabButtonPanel : TabButtonBase
     {
         [SerializeField] private Panel _panel;
 
@@ -12,7 +12,7 @@ namespace MobileUI
         {
             base.OnSelected();
 
-            _panel.Open(false);
+            _panel.Open();
             _panel.transform.SetAsLastSibling();
         }
 
@@ -20,7 +20,7 @@ namespace MobileUI
         {
             base.OnDeselected();
 
-            _panel.Close(false);
+            _panel.Close();
         }
     }
 }

@@ -19,15 +19,6 @@ namespace MobileUI
 
             OnBeforeOpened();
 
-            // open or close all panels directly
-            if (_panels != null)
-            {
-                foreach (var panel in _panels)
-                {
-                    panel.Open(directly);
-                }
-            }
-
             // open new window
             yield return StartCoroutine(CoSetActive(true, directly, kill, complete));
 
@@ -62,14 +53,6 @@ namespace MobileUI
             }
 
             OnBeforeClosed();
-
-            if (_panels != null)
-            {
-                foreach (var panel in _panels)
-                {
-                    panel.Close(directly);
-                }
-            }
 
             // close this fullscreen window with windowed window over this            
             while (true)

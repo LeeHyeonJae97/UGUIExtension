@@ -3,42 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExtendedGridLayoutGroup : GridLayoutGroup
+namespace MobileUI
 {
-    public enum RuntimeMode { Enabled, Disabled, Destory }
-
-    [SerializeField] private RuntimeMode _runtimeMode;
-
-    protected override void Start()
+    public class ExtendedGridLayoutGroup : GridLayoutGroup
     {
-        base.Start();
+        public enum RuntimeMode { Enabled, Disabled, Destory }
 
-        if (!Application.isPlaying) return;
+        [SerializeField] private RuntimeMode _runtimeMode;
 
-        StartCoroutine(CoCheckRuntime());
-
-        IEnumerator CoCheckRuntime()
+        protected override void Start()
         {
-            yield return null;
+            base.Start();
 
-            switch (_runtimeMode)
+            if (!Application.isPlaying) return;
+
+            StartCoroutine(CoCheckRuntime());
+
+            IEnumerator CoCheckRuntime()
             {
-                case RuntimeMode.Enabled:
-                    break;
+                yield return null;
 
-                case RuntimeMode.Disabled:
-                    {
-                        if (TryGetComponent<ContentSizeFitter>(out var filter)) filter.enabled = false;
-                        enabled = false;
+                switch (_runtimeMode)
+                {
+                    case RuntimeMode.Enabled:
                         break;
-                    }
 
-                case RuntimeMode.Destory:
-                    {
-                        if (TryGetComponent<ContentSizeFitter>(out var filter)) Destroy(filter);
-                        Destroy(this);
-                        break;
-                    }
+                    case RuntimeMode.Disabled:
+                        {
+                            if (TryGetComponent<ContentSizeFitter>(out var filter)) filter.enabled = false;
+                            enabled = false;
+                            break;
+                        }
+
+                    case RuntimeMode.Destory:
+                        {
+                            if (TryGetComponent<ContentSizeFitter>(out var filter)) Destroy(filter);
+                            Destroy(this);
+                            break;
+                        }
+                }
             }
         }
     }
