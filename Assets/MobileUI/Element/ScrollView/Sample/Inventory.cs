@@ -49,7 +49,7 @@ namespace MobileUI
         {
             _data = new List<List<IScrollRectItem>>(2);
 
-            _data.Add(new List<IScrollRectItem>(8));
+            _data.Add(new List<IScrollRectItem>(20));
             _data.Add(new List<IScrollRectItem>(5));
 
             for (int i = 0; i < _data.Capacity; i++)
