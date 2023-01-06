@@ -7,6 +7,9 @@ namespace MobileUI
 {
     public sealed class Panel : UIBehaviour
     {
+        public UITweenerKey Key => _key;
+
+        private UITweenerKey _key;
         private UITween _tween;
 
         private void Awake()
@@ -18,24 +21,35 @@ namespace MobileUI
         {
             if (_tween != null)
             {
-                StartCoroutine(_tween.CoPlay(key, directly));
+                StartCoroutine(CoOpen(key, directly));
+            }
+
+            IEnumerator CoOpen(UITweenerKey key, bool directly = false)
+            {
+                _key = key;
+
+                if (key == UITweenerKey.Open)
+                {
+                    gameObject.SetActive(true);
+                }
+
+                yield return StartCoroutine(_tween.CoPlay(key, directly));
+
+                if (key == UITweenerKey.Close)
+                {
+                    gameObject.SetActive(false);
+                }
             }
         }
 
         public void Open(bool directly = false)
         {
-            if (_tween != null)
-            {
-                StartCoroutine(_tween.CoPlay(UITweenerKey.Open, directly));
-            }
+            Open(UITweenerKey.Open, directly);
         }
 
         public void Close(bool directly = false)
         {
-            if (_tween != null)
-            {
-                StartCoroutine(_tween.CoPlay(UITweenerKey.Close, directly));
-            }
+            Open(UITweenerKey.Close, directly);
         }
     }
 }

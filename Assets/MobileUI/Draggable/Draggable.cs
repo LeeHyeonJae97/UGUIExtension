@@ -21,12 +21,10 @@ namespace MobileUI
 
         private Canvas _canvas;
 
-#if UNITY_EDITOR
-        private void Reset()
+        private void Awake()
         {
             enabled = false;
         }
-#endif
 
         private void LateUpdate()
         {
