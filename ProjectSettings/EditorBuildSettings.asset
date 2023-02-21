@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/MobileUI/Element/ScrollView/Sample/Sample.unity
+    path: Assets/MobileUI/ScrollView/Sample/Sample.unity
     guid: 8bdc4b736b539514a81d9fa671aa3d63
   m_configObjects: {}
