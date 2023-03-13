@@ -12,7 +12,7 @@ namespace MobileUI
             if (_activatedStack.Contains(this)) yield break;
 
             // can't open over popup window
-            if (_activatedStack.Count > 0) yield break;
+            //if (_activatedStack.Count > 0) yield break;
 
             // push new window to stack
             _activatedStack.Push(this);
