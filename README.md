@@ -3,50 +3,50 @@
 ## Animation
 DOTween
 ### Effect
-Punch
+punch
 ### Loop
-Loop alpha of CanvasGroup
+loop alpha of CanvasGroup
 
-Loop alpha of Graphic
+loop alpha of Graphic
 
-Loop position
+loop position
 
-Loop rotation
+loop rotation
 
 Loop size
 ### Tween
-Tween alpha of CanvasGroup
+tween alpha of CanvasGroup
 
-Tween alpha of Graphic
+tween alpha of Graphic
 
-Tween position
+tween position
 
-Tween rotation
+tween rotation
 
-Tween size
+tween size
 ## Button
-Long pressed down and up
+long pressed down and up
 ## Debug
-Debug ui
+debug ui
 ## Draggable
-Draggable
+draggable
 ## Joystick
-Joystick
+joystick
 ## LayoutGroup
-Auto disable or destroy on play
+auto disable or destroy on play
 ## NotificationBadge
-Notification badge for update of contents
+notification badge for update of contents
 ## OverscrollChecker
-Check over scrolled horizontally or vertically
+check over scrolled horizontally or vertically
 ## PopupText
 PopupText
 ## ScrollView
-reuse slots
+pooling slots for scroll view
 
 circular loop
 ## Tab
-Tab
+tab and tab group
 ## Toggle
-Toggle with handle
+toggle with handle
 ## View
-Simple mobile stackable UI system
+simple mobile stackable UI system
