@@ -26,6 +26,8 @@ Tween rotation
 Tween size
 ## Button
 Long pressed down and up
+## Debug
+Debug ui
 ## Draggable
 Draggable
 ## Joystick
