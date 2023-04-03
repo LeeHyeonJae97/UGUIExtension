@@ -10,5 +10,13 @@ namespace MobileUI
         {
             return UIManager.Instance.StartCoroutine(routine);
         }
+
+        // NOTICE :
+        // can stop all ui animations at once
+        //
+        public new void StopAllCoroutines()
+        {
+            UIManager.Instance.StopAllCoroutines();
+        }
     }
 }

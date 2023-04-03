@@ -500,7 +500,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 90, y: 0}
+  m_AnchoredPosition: {x: -38, y: 0}
   m_SizeDelta: {x: 130, y: 640}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &499352813
@@ -3210,14 +3210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activeOnViewClosed: 0
-  _data:
-    rid: -2
   _menuButton: {fileID: 8286735813342027467}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!224 &980815059215889249
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3296,15 +3289,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activeOnViewClosed: 0
-  _data:
-    rid: -2
   _openSettingsFullScreenButton: {fileID: 2841977339317741450}
   _closeButton: {fileID: 2420676121204087139}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!224 &1451658808680323976
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3793,15 +3779,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activeOnViewClosed: 0
-  _data:
-    rid: -2
   _confirmButton: {fileID: 8846381962491030562}
   _closeButton: {fileID: 6038116364339779930}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!114 &2791883803127588345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4412,17 +4391,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activeOnViewClosed: 0
-  _data:
-    rid: -2
   _openPanelButton: {fileID: 2187248132884291926}
   _closePanelButton: {fileID: 1256832753}
   _closeButton: {fileID: 8142388986028742780}
   _buttonsPanel: {fileID: 499352813}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!224 &5288727895040744171
 RectTransform:
   m_ObjectHideFlags: 0

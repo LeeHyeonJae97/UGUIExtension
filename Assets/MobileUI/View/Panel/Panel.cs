@@ -21,6 +21,9 @@ namespace MobileUI
         {
             if (_tween != null)
             {
+                StopAllCoroutines();
+                _tween.Kill(false);
+
                 StartCoroutine(CoOpen(key, directly));
             }
 

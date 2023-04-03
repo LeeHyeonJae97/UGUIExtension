@@ -15,8 +15,6 @@ namespace MobileUI
     [System.Serializable]
     public abstract class UITweener
     {
-        // type을 Open (UITweenerSize) 이런 식으로 설정
-        
         public UITweenerKey Key => _key;
 
         [SerializeField, HideInInspector] protected string _type;
