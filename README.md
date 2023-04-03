@@ -1,52 +1,49 @@
 # MobileUI
 
 ## Animation
-using DOTween
-### Effect
-punch
-### Loop
-loop alpha of CanvasGroup
+Set animation settings in inspector using DOTween. Only can use with View components.
 
-loop alpha of Graphic
+Punch Effect. Loop alpha of CanvasGroup and Graphic, position, rotation, size. Tween alpha of CanvasGroup and Graphic, position, rotation, size
 
-loop position
-
-loop rotation
-
-Loop size
-### Tween
-tween alpha of CanvasGroup
-
-tween alpha of Graphic
-
-tween position
-
-tween rotation
-
-tween size
 ## Button
-long pressed down and up
-## Debug
-debug ui
-## Draggable
-draggable
-## Joystick
-joystick
-## LayoutGroup
-auto disable or destroy on play
-## NotificationBadge
-notification badge for update of contents
-## OverscrollChecker
-check over scrolled horizontally or vertically
-## PopupText
-PopupText
-## ScrollView
-pooling slots for scroll view
+Add event for long pressed down and up
 
-circular loop
+## Debug
+UI for debug messages during play
+
+## Draggable
+Make UI elements draggable
+
+## Joystick
+Virtual joystick for mobile games
+
+## LayoutGroup
+Auto disable or destroy on play for optimization
+
+## NotificationBadge
+Notification icon image for update of contents
+
+## OverscrollChecker
+Check over scrolled horizontally or vertically in ScrollView
+
+## PopupText
+UI for popup text like error messages
+
+## ScrollView
+Pooling slots for ScrollView for optimization. Can loop elements circularly.
+
 ## Tab
-tab and tab group
+Simple tab system for mobile games.
+
 ## Toggle
-toggle with handle
+Toggle with handle
+
 ## View
-simple mobile stackable UI system
+Simple mobile stackable UI system.
+There are four types of View, Fullscreen, Windowed, Popup, Panel. Only one Fullscreen, Windowed, Popup can be used for only one canvas.
+
+If Fullscreen is activated, all views that activated earlier are closed for optimization.
+
+Popup is instantiated when activated and destroyed when deactivated. It's not reused.
+
+Panel is for group of elements inside of View. multiple panels can be use for one canvas.
