@@ -1,4 +1,4 @@
-# MobileUI
+# UGUIExtension
 
 ## Animation
 Set animation settings in inspector using DOTween. Only can use with View components.
