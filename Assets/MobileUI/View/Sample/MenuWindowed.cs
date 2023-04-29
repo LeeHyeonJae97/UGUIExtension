@@ -17,6 +17,11 @@ namespace MobileUI
             _closeButton.onClick.AddListener(OnClickCloseButton);
         }
 
+        public override void UpdateView(IViewData data)
+        {
+
+        }
+
         private void OnClickConfirmButton()
         {
             Get<ConfirmWindowed>().Open();

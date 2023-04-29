@@ -5,7 +5,7 @@ using UnityEngine;
 namespace MobileUI
 {
     [RequireComponent(typeof(Canvas))]
-    public class Popup : View
+    public abstract class Popup : View
     {
         public static T Get<T>() where T : Popup
         {

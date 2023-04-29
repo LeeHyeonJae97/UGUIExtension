@@ -17,6 +17,11 @@ namespace MobileUI
             _closeButton.onClick.AddListener(OnClickCloseButton);
         }
 
+        public override void UpdateView(IViewData data)
+        {
+            throw new System.NotImplementedException();
+        }
+
         private void OnClickOpenSettingsFullScreenButton()
         {
             Get<SettingsFullScreen>().Open();

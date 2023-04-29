@@ -7,6 +7,8 @@ namespace MobileUI
 {
     public class PopupTextView : Popup
     {
+        private PopupTextViewData Data => _data as PopupTextViewData;
+
         [SerializeField] private TextMeshProUGUI _text;
 
 #if UNITY_EDITOR
@@ -16,19 +18,22 @@ namespace MobileUI
         }
 #endif
 
+        public override void UpdateView(IViewData data)
+        {
+            _data = data;
+
+            _text.text = Data.Content;
+        }
+
         protected override void OnBeforeOpened()
         {
             base.OnBeforeOpened();
-
-            var data = _data as PopupTextViewData;
-
-            _text.text = data.Content;
 
             StartCoroutine(CoTimer());
 
             IEnumerator CoTimer()
             {
-                yield return new WaitForSeconds(data.Duration);
+                yield return new WaitForSeconds(Data.Duration);
 
                 Close();
             }
@@ -49,5 +54,5 @@ namespace MobileUI
             _content = content;
             _duration = duration;
         }
-    }    
+    }
 }

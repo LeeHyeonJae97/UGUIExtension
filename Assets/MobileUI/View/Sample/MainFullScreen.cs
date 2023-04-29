@@ -15,6 +15,11 @@ namespace MobileUI
             _menuButton.onClick.AddListener(OnClickMenuButton);
         }
 
+        public override void UpdateView(IViewData data)
+        {
+
+        }
+
         private void OnClickMenuButton()
         {
             Get<MenuWindowed>().Open();

@@ -14,6 +14,11 @@ namespace MobileUI
         protected IViewData _data;
         private UITween _tween;
 
+        /// <summary>
+        /// update contents with the data passed
+        /// </summary>
+        /// <param name="data"></param>
+        public abstract void UpdateView(IViewData data);
         protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);
         protected abstract IEnumerator CoClose(bool directly, bool kill, bool complete);
 
@@ -77,43 +82,81 @@ namespace MobileUI
             }
         }
 
+        /// <summary>
+        /// open
+        /// </summary>
+        /// <param name="directly"></param>
+        /// <param name="kill"></param>
+        /// <param name="complete"></param>
         public void Open(bool directly = false, bool kill = true, bool complete = false)
         {
             StartCoroutine(CoOpen(directly, kill, complete));
         }
 
+        /// <summary>
+        /// update contents with the data passed and open
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="directly"></param>
+        /// <param name="kill"></param>
+        /// <param name="complete"></param>
         public void Open(IViewData data, bool directly = false, bool kill = true, bool complete = false)
         {
-            _data = data;
+            UpdateView(data);
 
             StartCoroutine(CoOpen(directly, kill, complete));
         }
 
+        /// <summary>
+        /// close
+        /// </summary>
+        /// <param name="directly"></param>
+        /// <param name="kill"></param>
+        /// <param name="complete"></param>
         public void Close(bool directly = false, bool kill = true, bool complete = false)
         {
             StartCoroutine(CoClose(directly, kill, complete));
         }
 
-        public void Open(bool value, bool directly = false, bool kill = true, bool complete = false)
+        /// <summary>
+        /// open or close
+        /// </summary>
+        /// <param name="value">if ture, open view or close</param>
+        /// <param name="directly"></param>
+        /// <param name="kill"></param>
+        /// <param name="complete"></param>
+        public void SetActive(bool value, bool directly = false, bool kill = true, bool complete = false)
         {
             StartCoroutine(value ? CoOpen(directly, kill, complete) : CoClose(directly, kill, complete));
         }
 
+        /// <summary>
+        /// called right before opening
+        /// </summary>
         protected virtual void OnBeforeOpened()
         {
 
         }
 
+        /// <summary>
+        /// called right after opening
+        /// </summary>
         protected virtual void OnOpened()
         {
 
         }
 
+        /// <summary>
+        /// called right before closing
+        /// </summary>
         protected virtual void OnBeforeClosed()
         {
 
         }
 
+        /// <summary>
+        /// called right after closing
+        /// </summary>
         protected virtual void OnClosed()
         {
 

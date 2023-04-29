@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MobileUI
 {
-    public class Windowed : Window
+    public abstract class Windowed : Window
     {
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {

@@ -1,15 +1,13 @@
 using MobileUI;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DebugWindow : Windowed
 {
     [SerializeField] private ExtendedScrollRect _scrollRect;
     [SerializeField] private Draggable _group;
-    [SerializeField] private MobileUI.Button _switchButton;
+    [SerializeField] private Button _switchButton;
     [SerializeField] private Panel _logPanel;
     [SerializeField] private UnityEngine.UI.Button _logButton;
 
@@ -40,6 +38,11 @@ public class DebugWindow : Windowed
     protected override void OnDestroy()
     {
         Application.logMessageReceived -= OnLogMessageReceived;
+    }
+
+    public override void UpdateView(IViewData data)
+    {
+
     }
 
     private void OnLogMessageReceived(string condition, string stackTrace, LogType type)

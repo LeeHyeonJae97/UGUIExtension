@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MobileUI
 {
-    public class FullScreen : Window
+    public abstract class FullScreen : Window
     {
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
