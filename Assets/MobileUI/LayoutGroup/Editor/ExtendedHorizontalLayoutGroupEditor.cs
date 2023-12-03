@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 
 #if UNITY_EDITOR
-namespace MobileUI
+namespace UGUIExtension
 {
     [CustomEditor(typeof(ExtendedHorizontalLayoutGroup))]
     public class ExtendedHorizontalLayoutGroupEditor : HorizontalOrVerticalLayoutGroupEditor

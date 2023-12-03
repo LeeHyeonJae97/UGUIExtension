@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public abstract class FullScreen : Window
     {
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
-            if (_activatedStack.Contains(this)) yield break;
+            if (_actives.Contains(this)) yield break;
 
-            _activatedStack.Push(this);
+            canvas.sortingLayerName = SortingLayerName;
+            canvas.sortingOrder = SortingOrder;
+
+            _actives.Push(this);
 
             OnBeforeOpened();
 
@@ -23,9 +26,9 @@ namespace MobileUI
             // LOCAL FUNCTION
             void CloseAllBelowWindows()
             {
-                foreach (Window window in _activatedStack)
+                foreach (Window window in _actives)
                 {
-                    if (window.SortingOrder < SortingOrder)
+                    if (window.canvas.sortingOrder < canvas.sortingOrder)
                     {
                         StartCoroutine(window.CoSetActive(false, true, kill, complete));
                     }
@@ -37,7 +40,7 @@ namespace MobileUI
 
         protected override sealed IEnumerator CoClose(bool directly, bool kill, bool complete)
         {
-            if (!_activatedStack.Contains(this)) yield break;
+            if (!_actives.Contains(this)) yield break;
 
             ReopenAllClosedWindows();
 
@@ -50,9 +53,9 @@ namespace MobileUI
             // LOCAL FUNCTION
             void ReopenAllClosedWindows()
             {
-                foreach (Window window in _activatedStack)
+                foreach (Window window in _actives)
                 {
-                    if (window.SortingOrder < SortingOrder)
+                    if (window.canvas.sortingOrder < canvas.sortingOrder)
                     {
                         StartCoroutine(window.CoSetActive(true, true, kill, complete));
                     }
@@ -66,7 +69,7 @@ namespace MobileUI
             {
                 while (true)
                 {
-                    var window = _activatedStack.Pop();
+                    var window = _actives.Pop();
 
                     yield return StartCoroutine(window.CoSetActive(false, directly, kill, complete));
 

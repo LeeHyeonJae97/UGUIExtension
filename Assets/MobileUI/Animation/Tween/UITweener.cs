@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     // reserved keys
     //

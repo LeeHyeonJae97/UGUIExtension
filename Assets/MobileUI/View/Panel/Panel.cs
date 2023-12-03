@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public sealed class Panel : UIBehaviour
     {

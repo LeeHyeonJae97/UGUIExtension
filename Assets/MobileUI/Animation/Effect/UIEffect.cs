@@ -3,13 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public abstract class UIEffect : MonoBehaviour
     {
         [SerializeField] protected bool _playOnEnabled;
         [SerializeField] protected float _duration;
         protected Tweener _tweener;
+
+        public abstract void Play();
 
         protected virtual void Reset()
         {
@@ -24,7 +26,5 @@ namespace MobileUI
                 Play();
             }
         }
-
-        public abstract void Play();
     }
 }

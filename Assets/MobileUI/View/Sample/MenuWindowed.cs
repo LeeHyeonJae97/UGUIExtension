@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class MenuWindowed : Windowed
     {

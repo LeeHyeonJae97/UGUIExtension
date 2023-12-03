@@ -6,7 +6,7 @@ using UnityEditor;
 #endif
 
 #if UNITY_EDITOR
-namespace MobileUI
+namespace UGUIExtension
 {
     [CustomEditor(typeof(UITween)), CanEditMultipleObjects]
     public class UITweenEditor : Editor

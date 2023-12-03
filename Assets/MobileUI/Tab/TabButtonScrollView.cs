@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class TabButtonScrollView : TabButtonBase
     {

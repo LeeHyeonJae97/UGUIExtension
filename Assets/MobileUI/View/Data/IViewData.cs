@@ -1,5 +1,5 @@
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public interface IViewData
     {

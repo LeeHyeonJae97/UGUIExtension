@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     [RequireComponent(typeof(Graphic))]
     public class UILoopGraphicAlpha : UILoop

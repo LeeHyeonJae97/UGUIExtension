@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class TabButtonBase : Button
     {

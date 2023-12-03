@@ -7,7 +7,7 @@ using UnityEditor.UI;
 #endif
 
 #if UNITY_EDITOR
-namespace MobileUI
+namespace UGUIExtension
 {
     [CustomEditor(typeof(ExtendedGridLayoutGroup))]
     public class ExtendedGridLayoutGroupEditor : GridLayoutGroupEditor

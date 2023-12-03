@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public abstract class Windowed : Window
     {
         protected override sealed IEnumerator CoOpen(bool directly, bool kill, bool complete)
         {
-            if (_activatedStack.Contains(this)) yield break;
+            if (_actives.Contains(this)) yield break;
 
-            _activatedStack.Push(this);
+            _actives.Push(this);
 
             OnBeforeOpened();
 
@@ -21,11 +21,11 @@ namespace MobileUI
 
         protected override sealed IEnumerator CoClose(bool directly, bool kill, bool complete)
         {
-            if (!_activatedStack.Contains(this)) yield break;
+            if (!_actives.Contains(this)) yield break;
 
             OnBeforeClosed();
 
-            _activatedStack.Pop();
+            _actives.Pop();
 
             yield return StartCoroutine(CoSetActive(false, directly, kill, complete));
 

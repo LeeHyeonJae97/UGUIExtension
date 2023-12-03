@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public abstract class View : UIBehaviour
     {
         public bool IsActive { get; private set; }
-        public int SortingOrder => _canvas.sortingOrder;
 
         [SerializeField] private bool _activeOnViewClosed;
-        protected Canvas _canvas;
+        internal Canvas canvas;
         protected IViewData _data;
         private UITween _tween;
 
@@ -19,11 +18,14 @@ namespace MobileUI
         /// </summary>
         /// <param name="data"></param>
         public abstract void UpdateView(IViewData data);
+
         protected abstract IEnumerator CoOpen(bool directly, bool kill, bool complete);
+
         protected abstract IEnumerator CoClose(bool directly, bool kill, bool complete);
 
         protected virtual void Awake()
         {
+            canvas = GetComponent<Canvas>();
             _tween = GetComponent<UITween>();
         }
 

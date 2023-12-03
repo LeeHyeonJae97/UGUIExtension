@@ -6,7 +6,7 @@ using UnityEditor;
 #endif
 
 #if UNITY_EDITOR
-namespace MobileUI
+namespace UGUIExtension
 {
     [CustomEditor(typeof(Button))]
     public class ButtonEditor : UnityEditor.UI.ButtonEditor

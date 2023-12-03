@@ -20,8 +20,7 @@ public class Anchor : MonoBehaviour
         Length,
     }
 
-    [SerializeField]
-    private Type _type;
+    [SerializeField] private Type _type;
 
     private void Awake()
     {

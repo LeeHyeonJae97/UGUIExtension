@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     [RequireComponent(typeof(ScrollRect))]
     public class OverscrollChecker : MonoBehaviour

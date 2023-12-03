@@ -7,7 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class Toggle : MonoBehaviour, IPointerClickHandler
     {

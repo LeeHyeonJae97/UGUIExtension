@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MobileUI;
+using UGUIExtension;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class Initializer : MonoBehaviour
     {

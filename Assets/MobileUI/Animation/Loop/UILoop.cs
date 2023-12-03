@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public abstract class UILoop : MonoBehaviour
     {
@@ -11,6 +11,8 @@ namespace MobileUI
         [SerializeField] protected Ease _ease;
         [SerializeField] protected float _duration;
         protected Tweener _tweener;
+
+        public abstract void Play();
 
         protected virtual void Reset()
         {
@@ -26,7 +28,5 @@ namespace MobileUI
                 Play();
             }
         }
-
-        public abstract void Play();
     }
 }

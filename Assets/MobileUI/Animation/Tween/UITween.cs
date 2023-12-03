@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     [RequireComponent(typeof(UIBehaviour))]
     public class UITween : UIBehaviour

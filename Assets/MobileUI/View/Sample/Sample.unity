@@ -527,34 +527,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9a231322919e6741934af542126ee78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tweeners:
-  - rid: 1826794886856441856
-  - rid: 1826794886856441857
+  _tweeners: []
   references:
     version: 2
-    RefIds:
-    - rid: 1826794886856441856
-      type: {class: UITweenerPosition, ns: MobileUI, asm: MobileUI}
-      data:
-        _type: Position (Open)
-        _key: 0
-        _ease: 0
-        _duration: 0.5
-        _overrideCurrent: 0
-        _start: {x: 90, y: 0}
-        _end: {x: 0, y: 0}
-        _rectTr: {fileID: 499352811}
-    - rid: 1826794886856441857
-      type: {class: UITweenerPosition, ns: MobileUI, asm: MobileUI}
-      data:
-        _type: Position (Close)
-        _key: 1
-        _ease: 0
-        _duration: 0.5
-        _overrideCurrent: 0
-        _start: {x: 0, y: 0}
-        _end: {x: 90, y: 0}
-        _rectTr: {fileID: 499352811}
+    RefIds: []
 --- !u!1 &684924332
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace MobileUI
+namespace UGUIExtension
 {
     public class Inventory : MonoBehaviour
     {
